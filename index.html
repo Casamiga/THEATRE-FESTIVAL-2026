@@ -3,23 +3,36 @@
 <head>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3YEXQCNQSD"></script>
     <script>
+        // Получаем параметры из URL сразу при загрузке
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('uid'); // Ищем ?uid=...
+
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-3YEXQCNQSD');
+
+        // Настройка GA4 с User ID (если он есть)
+        if (userId) {
+            gtag('config', 'G-3YEXQCNQSD', {
+                'user_id': userId,
+                'send_page_view': true
+            });
+        } else {
+            gtag('config', 'G-3YEXQCNQSD');
+        }
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teatro Sin Fronteras 2026</title>
+    <title>TEATRO SIN FRONTERAS 2026</title>
     <link rel="icon" type="image/png" href="images/favicon4.png">
     <style>
-        /* ===== STYLES FROM UPLOADED FILE ===== */
+        /* ===== STYLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
         body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
 
-        /* Language Selector Style */
+        /* Language Selector */
         .language-selector { position:fixed; top:30px; left:30px; z-index:2000; background:white; border-radius:25px; padding:8px 15px; box-shadow:0 4px 15px rgba(0,0,0,0.2); border:2px solid #00A8E8; }
         .language-selector select { background:transparent; border:none; font-weight:bold; color:#00A8E8; cursor:pointer; font-size:14px; outline: none; }
 
@@ -51,8 +64,16 @@
         .slide-9 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; align-items: center; justify-content: center; padding: 60px 80px; }
         .slide-9 h2 { text-align: center; color: white; margin-bottom: 50px; width: 100%; font-size: clamp(32px, 4vw, 48px); font-weight: bold; }
         .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 100%; max-width: 1200px; }
-        .organizer-box { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; min-height: 200px; }
-        .organizer-logo { height: clamp(80px, 12vw, 120px); width: auto; object-fit: contain; background: white; padding: 10px; border-radius: 8px; /* Added background for colored logos visibility */ }
+        .organizer-box { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 250px; }
+        
+        /* LOGO STYLE FOR SLIDE 9 - NO BACKGROUND */
+        .organizer-logo { 
+            height: clamp(120px, 18vw, 180px); 
+            width: auto; 
+            max-width: 100%;
+            object-fit: contain; 
+        }
+        
         .organizer-box h3 { font-size: clamp(18px, 2.2vw, 24px); margin: 0; font-weight: bold; color: white; }
         .organizer-box p { font-size: clamp(14px, 1.5vw, 16px); opacity: 0.9; margin: 0; color: white; }
 
@@ -136,12 +157,13 @@
 
 <div class="language-selector">
     <select id="langSelect" onchange="setLanguage(this.value)">
+        <option value="cat">Català</option>
         <option value="es">Español</option>
-        <option value="en">English</option>
         <option value="fr">Français</option>
         <option value="de">Deutsch</option>
-        <option value="cat">Català</option>
         <option value="pt">Português</option>
+        <option value="it">Italiano</option>
+        <option value="en">English</option>
     </select>
 </div>
 
@@ -413,7 +435,7 @@
             </div>
             
             <div class="contact-info">
-                <p>📞 <a href="tel:+34698999033">+34 698 999 033</a> (<a href="https://wa.me/34698999033?text=%C2%A1Hola!%20Me%20interesa%20participar%20en%20el%20Festival%20Internacional%20de%20Teatro%20Infantil%20%22Teatro%20Sin%20Fronteras%22.%20Por%20favor%2C%20env%C3%ADenme%20el%20formulario%20de%20solicitud." target="_blank">WhatsApp</a>, <a href="https://t.me/+34698999033?text=%C2%A1Hola!%20Me%20interesa%20participar%20en%20el%20Festival%20Internacional%20de%20Teatro%20Infantil%20%22Teatro%20Sin%20Fronteras%22.%20Por%20favor%2C%20env%C3%ADenme%20el%20formulario%20de%20solicitud." target="_blank" rel="noopener noreferrer">Telegram</a>)</p>
+                <p>📞 <a href="tel:+34698999033">+34 698 999 033</a> (<a id="whatsapp-link" href="#" target="_blank">WhatsApp</a>, <a id="telegram-link" href="#" target="_blank" rel="noopener noreferrer">Telegram</a>)</p>
             </div>
             
             <div class="contact-info">
@@ -527,17 +549,18 @@
             slide11_contacto: "Contacta con nosotros",
             org_casamiga_full: "Asociación CASAMIGA",
             btn_anterior: "← Anterior",
-            btn_siguiente: "Siguiente →"
+            btn_siguiente: "Siguiente →",
+            link_message: "¡Hola! Me interesa participar en el Festival Internacional de Teatro Infantil \"Teatro Sin Fronteras\". Por favor, envíenme el formulario de solicitud."
         },
         en: {
             slide1_titulo: "THEATER WITHOUT BORDERS",
-            slide1_subtitulo: "Connecting the world through theater",
+            slide1_subtitulo: "Uniting the world through theater",
             slide1_tipo: "International Children's Theater Festival",
             slide1_fecha: "March 1, 2026",
             slide1_lugar: "Municipal Theater of Lloret de Mar, Spain",
             slide1_tagline: "Your group on Europe's international stage",
             slide2_titulo: "About the Festival",
-            slide2_descripcion: "An international theater celebration bringing together children and teens aged 6–18 from different countries and cultures",
+            slide2_descripcion: "A global celebration bringing together children and teens aged 6–18 from different countries and cultures through the art of theater",
             slide2_2025: "First Festival: 10 groups, 5 languages, 400 spectators, 8 categories",
             slide2_2026: "6 countries and 8 languages expected",
             valores: "Values:",
@@ -545,119 +568,120 @@
             instagram_label: "Instagram",
             slide3_titulo: "Why Participate?",
             slide3_razon1_titulo: "International Experience:",
-            slide3_razon1_desc: "A multicultural stage, real audience, no language barriers",
-            slide3_razon2_titulo: "Prestige for Your Center:",
-            slide3_razon2_desc: "Perform at a prestigious international festival",
+            slide3_razon1_desc: "A multicultural stage, a real audience, and no language barriers",
+            slide3_razon2_titulo: "Prestige for Your School:",
+            slide3_razon2_desc: "Perform at a distinguished international festival",
             slide3_razon3_titulo: "Cultural Exchange:",
-            slide3_razon3_desc: "Meetings with groups from 6 European countries",
+            slide3_razon3_desc: "Connect with groups from 6 European countries",
             slide3_razon4_titulo: "Supportive Atmosphere:",
-            slide3_razon4_desc: "A festival of collaboration, not competition",
+            slide3_razon4_desc: "A festival of collaboration, not cut-throat competition",
             slide3_razon5_titulo: "Recognition:",
-            slide3_razon5_desc: "Statuettes, diplomas, international certificates and a Grand Prize with cash award",
-            slide3_lema: "Art erases borders",
-            slide4_titulo: "2026 Novelties",
-            slide4_noticia1_titulo: "By Age Groups:",
+            slide3_razon5_desc: "Statuettes, diplomas, international certificates, and a Grand Prize with a cash grant",
+            slide3_lema: "Art knows no borders",
+            slide4_titulo: "New in 2026",
+            slide4_noticia1_titulo: "By Age Group:",
             slide4_noticia1_desc: "10:00–14:00 (ages 6–11) and 16:00–20:00 (ages 12–18)",
             slide4_noticia2_titulo: "Jury:",
-            slide4_noticia2_desc: "Professional actors, directors, pedagogues and theater experts",
-            slide4_noticia3_titulo: "New Prizes:",
-            slide4_noticia3_desc: "Recognition for different theater genres",
+            slide4_noticia2_desc: "Professional actors, directors, educators, and theater experts",
+            slide4_noticia3_titulo: "New Awards:",
+            slide4_noticia3_desc: "Recognition for diverse theatrical genres",
             slide4_noticia4_titulo: "Media Coverage:",
-            slide4_noticia4_desc: "Local TV and regional press",
+            slide4_noticia4_desc: "Local TV and regional press coverage",
             slide4_noticia5_titulo: "Free Admission:",
-            slide4_noticia5_desc: "Full house for each performance",
+            slide4_noticia5_desc: "Full house for every performance",
             slide5_titulo: "Participation Format",
             slide5_formato1_titulo: "The Performance",
             slide5_formato1_item1: "Duration: 10–15 minutes",
-            slide5_formato1_item2: "Setup: up to 10 minutes",
-            slide5_formato1_item3: "Brief description of the work",
-            slide5_formato1_item4: "Any language is welcome",
+            slide5_formato1_item2: "Stage setup: up to 10 minutes",
+            slide5_formato1_item3: "Brief description of the play",
+            slide5_formato1_item4: "Performance in any language is welcome",
             slide5_formato2_titulo: "Feedback",
-            slide5_formato2_item1: "Theater professionals offer warm comments and constructive recommendations to each group",
-            slide6_titulo: "Awards and Recognition",
+            slide5_formato2_item1: "Theater professionals provide encouraging comments and constructive recommendations to each group",
+            slide6_titulo: "Awards & Recognition",
             slide6_premio1_titulo: "For the Group",
-            slide6_premio1_desc: "A Grand Prize with cash award + Festival Statuette",
+            slide6_premio1_desc: "Grand Prize with cash grant + Festival Statuette",
             slide6_premio2_titulo: "For Participants",
-            slide6_premio2_desc: "Diplomas",
+            slide6_premio2_desc: "Personal Diplomas",
             slide6_premio3_titulo: "Additional",
-            slide6_premio3_desc: "Special awards",
-            slide7_titulo: "Conditions and Fees",
+            slide6_premio3_desc: "Special Category Awards",
+            slide7_titulo: "Conditions & Fees",
             condicion_edad: "Age:",
             slide7_edad: "6–18 years",
             condicion_repertorio: "Repertoire:",
             slide7_repertorio: "No restrictions",
-            condicion_garantia: "Guaranteed Participation:",
-            slide7_garantia: "All groups that pay the fee get stage time",
-            slide7_aportacion_titulo: "Organizational Fee",
-            slide7_precio1: "€45",
+            condicion_garantia: "Guaranteed Stage Time:",
+            slide7_garantia: "Every registered group is guaranteed a performance slot",
+            slide7_aportacion_titulo: "Participation Fee",
+            slide7_precio1: "45 €",
             slide7_precio1_desc: "per participant",
-            slide7_precio2: "€450",
+            slide7_precio2: "450 €",
             slide7_precio2_desc: "for groups of 10+ participants",
-            slide8_titulo: "Voices from 2025 Festival",
+            slide8_titulo: "Voices of the Festival 2025",
             slide8_testimonio1_autor: "Nikita, Participant (13 years old):",
-            slide8_testimonio1_texto: "«Language doesn't matter. On stage we all understand each other».",
-            slide8_testimonio2_autor: "Mr. Frederic Guix, Culture Councilor:",
-            slide8_testimonio2_texto: "«Courage and sincerity. These are children's first steps in the big world of theater».",
+            slide8_testimonio1_texto: "“Language doesn't matter. On stage, we all understand each other.”",
+            slide8_testimonio2_autor: "Mr. Frederic Guix, Councilor of Culture:",
+            slide8_testimonio2_texto: "“Courage and sincerity. These are the children's first steps into the great world of theater.”",
             slide8_testimonio3_autor: "Mr. Adrià Lamelas Martínez, Mayor of Lloret de Mar:",
-            slide8_testimonio3_texto: "«It's an honor to receive directors and children from all over Europe. We support art that unites».",
-            slide9_titulo: "Organizers and Support",
+            slide8_testimonio3_texto: "“It is an honor to welcome directors and children from all over Europe. We support art that unites.”",
+            slide9_titulo: "Organizers & Support",
             org_generalitat: "Generalitat of Catalonia",
             org_casamiga: "Casamiga Association",
             org_teatro: "Municipal Theater of Lloret de Mar",
             org_teatro_desc: "Official Festival Stage",
-            org_ayuntamiento: "Municipality of Lloret de Mar",
-            slide10_titulo: "Still Thinking About It?",
+            org_ayuntamiento: "City Council of Lloret de Mar",
+            slide10_titulo: "Still thinking about it?",
             slide11_titulo: "Join Us!",
-            slide11_tagline: "Give children an experience they'll remember for life",
+            slide11_tagline: "Give children an experience they will cherish forever",
             slide11_contacto: "Contact Us",
             org_casamiga_full: "CASAMIGA Association",
             btn_anterior: "← Previous",
-            btn_siguiente: "Next →"
+            btn_siguiente: "Next →",
+            link_message: "Hello! I am interested in participating in the International Children's Theater Festival 'Theater Without Borders'. Please send me the application form."
         },
         fr: {
-            slide1_titulo: "THÉÂTRE SANS FRONTIÈRES",
+            slide1_titulo: "Théâtre sans Frontières",
             slide1_subtitulo: "Unissant le monde par le théâtre",
             slide1_tipo: "Festival international de théâtre pour enfants",
             slide1_fecha: "1er mars 2026",
             slide1_lugar: "Théâtre Municipal de Lloret de Mar, Espagne",
             slide1_tagline: "Votre troupe sur la scène internationale d'Europe",
             slide2_titulo: "Sur le Festival",
-            slide2_descripcion: "Une célébration internationale du théâtre qui réunit enfants et adolescents de 6 à 18 ans de différents pays et cultures",
-            slide2_2025: "Premier Festival: 10 troupes, 5 langues, 400 spectateurs, 8 catégories",
+            slide2_descripcion: "Une célébration internationale du théâtre qui réunit enfants et adolescents de 6 à 18 ans de différents pays et cultures.",
+            slide2_2025: "Premier festival : 10 troupes, 5 langues, 400 spectateurs, 8 catégories",
             slide2_2026: "6 pays et 8 langues attendus",
-            valores: "Valeurs:",
+            valores: "Valeurs :",
             slide2_valores: "Inclusivité, diversité linguistique, échange culturel",
             instagram_label: "Instagram",
-            slide3_titulo: "Pourquoi participer?",
-            slide3_razon1_titulo: "Expérience internationale:",
+            slide3_titulo: "Pourquoi participer ?",
+            slide3_razon1_titulo: "Expérience internationale :",
             slide3_razon1_desc: "Une scène multiculturelle, un vrai public, sans barrières linguistiques",
-            slide3_razon2_titulo: "Prestige pour votre centre:",
+            slide3_razon2_titulo: "Prestige pour votre centre :",
             slide3_razon2_desc: "Jouer dans un festival international de prestige",
-            slide3_razon3_titulo: "Échange culturel:",
+            slide3_razon3_titulo: "Échange culturel :",
             slide3_razon3_desc: "Rencontres avec des troupes de 6 pays européens",
-            slide3_razon4_titulo: "Atmosphère de soutien:",
+            slide3_razon4_titulo: "Atmosphère de soutien :",
             slide3_razon4_desc: "Un festival de collaboration, pas de compétition",
-            slide3_razon5_titulo: "Reconnaissance:",
+            slide3_razon5_titulo: "Prix :",
             slide3_razon5_desc: "Statuettes, diplômes, certificats internationaux et un Grand Prix doté d'une récompense financière",
             slide3_lema: "L'art efface les frontières",
-            slide4_titulo: "Nouveautés 2026",
-            slide4_noticia1_titulo: "Par groupes d'âge:",
-            slide4_noticia1_desc: "10h00–14h00 (6–11 ans) et 16h00–20h00 (12–18 ans)",
-            slide4_noticia2_titulo: "Jury:",
+            slide4_titulo: "Nouveautés en 2026",
+            slide4_noticia1_titulo: "Par groupes d'âge :",
+            slide4_noticia1_desc: "10:00–14:00 h (6–11 ans) et 16:00–20:00 h (12–18 ans)",
+            slide4_noticia2_titulo: "Jury :",
             slide4_noticia2_desc: "Acteurs professionnels, metteurs en scène, pédagogues et experts théâtraux",
-            slide4_noticia3_titulo: "Nouveaux prix:",
+            slide4_noticia3_titulo: "Nouveaux prix :",
             slide4_noticia3_desc: "Reconnaissances pour différents genres théâtraux",
-            slide4_noticia4_titulo: "Couverture médiatique:",
+            slide4_noticia4_titulo: "Couverture médiatique :",
             slide4_noticia4_desc: "TV locale et presse régionale",
-            slide4_noticia5_titulo: "Entrée gratuite:",
+            slide4_noticia5_titulo: "Entrée gratuite :",
             slide4_noticia5_desc: "Salle complète pour chaque représentation",
             slide5_titulo: "Format de participation",
             slide5_formato1_titulo: "Le spectacle",
-            slide5_formato1_item1: "Durée: 10–15 minutes",
-            slide5_formato1_item2: "Montage: jusqu'à 10 minutes",
-            slide5_formato1_item3: "Description brève de l'œuvre",
+            slide5_formato1_item1: "Durée : 10–15 minutes",
+            slide5_formato1_item2: "Montage : jusqu'à 10 minutes",
+            slide5_formato1_item3: "Description de l'œuvre (brève)",
             slide5_formato1_item4: "Toute langue est bienvenue",
-            slide5_formato2_titulo: "Retours",
+            slide5_formato2_titulo: "Retours constructifs",
             slide5_formato2_item1: "Les professionnels du théâtre offrent des commentaires chaleureux et des recommandations constructives à chaque troupe",
             slide6_titulo: "Prix et reconnaissance",
             slide6_premio1_titulo: "Pour la troupe",
@@ -667,11 +691,11 @@
             slide6_premio3_titulo: "Supplémentaire",
             slide6_premio3_desc: "Prix spéciaux",
             slide7_titulo: "Conditions et participation",
-            condicion_edad: "Âge:",
+            condicion_edad: "Âge :",
             slide7_edad: "6–18 ans",
-            condicion_repertorio: "Répertoire:",
+            condicion_repertorio: "Répertoire :",
             slide7_repertorio: "Sans restrictions",
-            condicion_garantia: "Participation garantie:",
+            condicion_garantia: "Participation garantie :",
             slide7_garantia: "Toutes les troupes qui versent la cotisation obtiennent un créneau de scène",
             slide7_aportacion_titulo: "Contribution organisationnelle",
             slide7_precio1: "45 €",
@@ -679,97 +703,98 @@
             slide7_precio2: "450 €",
             slide7_precio2_desc: "pour les groupes de 10+ participants",
             slide8_titulo: "Voix du Festival 2025",
-            slide8_testimonio1_autor: "Nikita, Participante (13 ans):",
-            slide8_testimonio1_texto: "«La langue n'a pas d'importance. Sur scène, nous nous entendons tous».",
-            slide8_testimonio2_autor: "M. Frederic Guix, Conseiller à la Culture:",
-            slide8_testimonio2_texto: "«Courage et sincérité. Ce sont les premiers pas des enfants dans le grand monde du théâtre».",
-            slide8_testimonio3_autor: "M. Adrià Lamelas Martínez, Maire de Lloret de Mar:",
-            slide8_testimonio3_texto: "«C'est un honneur de recevoir des metteurs en scène et des enfants de toute l'Europe. Nous soutenons l'art qui unit».",
+            slide8_testimonio1_autor: "Nikita, participant (13 ans) :",
+            slide8_testimonio1_texto: "« La langue n'a pas d'importance. Sur scène, nous nous entendons tous »",
+            slide8_testimonio2_autor: "M. Frederic Guix, Conseiller à la Culture :",
+            slide8_testimonio2_texto: "« Courage et sincérité. Ce sont les premiers pas des enfants dans le grand monde du théâtre »",
+            slide8_testimonio3_autor: "M. Adrià Lamelas Martínez, Maire de Lloret de Mar :",
+            slide8_testimonio3_texto: "« C'est un honneur de recevoir des metteurs en scène et des enfants de toute l'Europe. Nous soutenons l'art qui unit »",
             slide9_titulo: "Organisateurs et soutien",
             org_generalitat: "Generalitat de Catalogne",
             org_casamiga: "Association Casamiga",
             org_teatro: "Théâtre Municipal de Lloret de Mar",
             org_teatro_desc: "Scène officielle du festival",
             org_ayuntamiento: "Mairie de Lloret de Mar",
-            slide10_titulo: "Y réfléchis-tu encore?",
-            slide11_titulo: "Rejoins-nous!",
-            slide11_tagline: "Offre aux enfants une expérience dont ils se souviendront toute leur vie",
+            slide10_titulo: "Y réfléchis-tu encore ?",
+            slide11_titulo: "Rejoins-nous !",
+            slide11_tagline: "Offre aux enfants une expérience qu'ils se souviendront toute leur vie",
             slide11_contacto: "Contacte-nous",
             org_casamiga_full: "Association CASAMIGA",
             btn_anterior: "← Précédent",
-            btn_siguiente: "Suivant →"
+            btn_siguiente: "Suivant →",
+            link_message: "Bonjour ! Je suis intéressé par la participation au Festival International de Théâtre pour Enfants « Théâtre sans Frontières ». Veuillez m'envoyer le formulaire de candidature."
         },
         de: {
-            slide1_titulo: "THEATER OHNE GRENZEN",
+            slide1_titulo: "Theater ohne Grenzen",
             slide1_subtitulo: "Die Welt durch Theater verbinden",
             slide1_tipo: "Internationales Kindertheaterfestival",
             slide1_fecha: "1. März 2026",
             slide1_lugar: "Stadttheater Lloret de Mar, Spanien",
             slide1_tagline: "Ihr Ensemble auf der internationalen Bühne Europas",
             slide2_titulo: "Über das Festival",
-            slide2_descripcion: "Eine internationale Theaterfeier, die Kinder und Jugendliche im Alter von 6 bis 18 Jahren aus verschiedenen Ländern und Kulturen zusammenbringt",
-            slide2_2025: "Erstes Festival: 10 Ensembles, 5 Sprachen, 400 Zuschauer, 8 Kategorien",
-            slide2_2026: "6 Länder und 8 Sprachen erwartet",
+            slide2_descripcion: "Eine internationale Theaterfeier, die Kinder und Jugendliche im Alter von 6 bis 18 Jahren aus verschiedenen Ländern und Kulturen zusammenbringt.",
+            slide2_2025: "Erstes Festival: 10 Ensembles, 5 Sprachen, 400 Zuschauer, 8 Kategorien.",
+            slide2_2026: "Es werden 6 Länder und 8 Sprachen erwartet.",
             valores: "Werte:",
-            slide2_valores: "Inklusion, sprachliche Vielfalt, kultureller Austausch",
+            slide2_valores: "Inklusion, sprachliche Vielfalt, kultureller Austausch.",
             instagram_label: "Instagram",
             slide3_titulo: "Warum teilnehmen?",
             slide3_razon1_titulo: "Internationale Erfahrung:",
-            slide3_razon1_desc: "Eine multikulturelle Bühne, echtes Publikum, ohne Sprachbarrieren",
+            slide3_razon1_desc: "Eine multikulturelle Bühne, echtes Publikum, ohne Sprachbarrieren.",
             slide3_razon2_titulo: "Prestige für Ihre Einrichtung:",
-            slide3_razon2_desc: "Auftritt bei einem renommierten internationalen Festival",
+            slide3_razon2_desc: "Auftritt bei einem renommierten internationalen Festival.",
             slide3_razon3_titulo: "Kultureller Austausch:",
-            slide3_razon3_desc: "Begegnungen mit Ensembles aus 6 europäischen Ländern",
+            slide3_razon3_desc: "Begegnungen mit Ensembles aus 6 europäischen Ländern.",
             slide3_razon4_titulo: "Atmosphäre der Unterstützung:",
-            slide3_razon4_desc: "Ein Festival der Zusammenarbeit, nicht des Wettbewerbs",
-            slide3_razon5_titulo: "Anerkennung:",
-            slide3_razon5_desc: "Statuetten, Urkunden, internationale Zertifikate und ein Großpreis mit Geldprämie",
-            slide3_lema: "Kunst überwindet Grenzen",
+            slide3_razon4_desc: "Ein Festival der Zusammenarbeit, nicht des Wettbewerbs.",
+            slide3_razon5_titulo: "Auszeichnungen:",
+            slide3_razon5_desc: "Statuetten, Urkunden, internationale Zertifikate und ein Großpreis mit Geldprämie.",
+            slide3_lema: "Kunst überwindet Grenzen.",
             slide4_titulo: "Neuerungen 2026",
             slide4_noticia1_titulo: "Nach Altersgruppen:",
-            slide4_noticia1_desc: "10:00–14:00 (6–11 Jahre) und 16:00–20:00 (12–18 Jahre)",
+            slide4_noticia1_desc: "10:00–14:00 Uhr (6–11 Jahre) und 16:00–20:00 Uhr (12–18 Jahre).",
             slide4_noticia2_titulo: "Jury:",
-            slide4_noticia2_desc: "Professionelle Schauspieler, Regisseure, Pädagogen und Theaterexperten",
+            slide4_noticia2_desc: "Professionelle Schauspieler, Regisseure, Pädagogen und Theaterexperten.",
             slide4_noticia3_titulo: "Neue Auszeichnungen:",
-            slide4_noticia3_desc: "Würdigungen für verschiedene Theatergenres",
+            slide4_noticia3_desc: "Würdigungen für verschiedene Theatergenres.",
             slide4_noticia4_titulo: "Medienberichterstattung:",
-            slide4_noticia4_desc: "Lokales Fernsehen und Regionalpresse",
+            slide4_noticia4_desc: "Lokales Fernsehen und Regionalpresse.",
             slide4_noticia5_titulo: "Freier Eintritt:",
-            slide4_noticia5_desc: "Volles Haus bei jeder Aufführung",
+            slide4_noticia5_desc: "Volles Haus bei jeder Aufführung.",
             slide5_titulo: "Teilnahmeformat",
             slide5_formato1_titulo: "Die Aufführung",
-            slide5_formato1_item1: "Dauer: 10–15 Minuten",
-            slide5_formato1_item2: "Aufbau: bis zu 10 Minuten",
-            slide5_formato1_item3: "Kurze Beschreibung des Stücks",
-            slide5_formato1_item4: "Jede Sprache ist willkommen",
+            slide5_formato1_item1: "Dauer: 10–15 Minuten.",
+            slide5_formato1_item2: "Bühnenaufbau: bis zu 10 Minuten.",
+            slide5_formato1_item3: "Kurze Beschreibung des Stücks.",
+            slide5_formato1_item4: "Jede Sprache ist willkommen.",
             slide5_formato2_titulo: "Rückmeldung",
-            slide5_formato2_item1: "Theaterprofis geben wertschätzendes Feedback und konstruktive Empfehlungen für jedes Ensemble",
+            slide5_formato2_item1: "Theaterprofis geben wertschätzendes Feedback und konstruktive Empfehlungen für jedes Ensemble.",
             slide6_titulo: "Auszeichnungen und Anerkennung",
             slide6_premio1_titulo: "Für das Ensemble",
-            slide6_premio1_desc: "Ein Großpreis mit Geldprämie + Festivalskulptur",
+            slide6_premio1_desc: "Ein Großpreis mit Geldprämie + Festivalskulptur.",
             slide6_premio2_titulo: "Für die Teilnehmenden",
-            slide6_premio2_desc: "Urkunden",
+            slide6_premio2_desc: "Urkunden.",
             slide6_premio3_titulo: "Zusätzlich",
-            slide6_premio3_desc: "Spezialauszeichnungen",
+            slide6_premio3_desc: "Spezialauszeichnungen.",
             slide7_titulo: "Bedingungen und Beitrag",
             condicion_edad: "Alter:",
-            slide7_edad: "6–18 Jahre",
+            slide7_edad: "6–18 Jahre.",
             condicion_repertorio: "Repertoire:",
-            slide7_repertorio: "Keine Einschränkungen",
+            slide7_repertorio: "Keine Einschränkungen.",
             condicion_garantia: "Garantierte Teilnahme:",
-            slide7_garantia: "Alle Ensembles, die den Beitrag zahlen, erhalten einen Aufführungsplatz",
+            slide7_garantia: "Alle Ensembles, die den Beitrag zahlen, erhalten einen Aufführungsplatz.",
             slide7_aportacion_titulo: "Organisationsbeitrag",
             slide7_precio1: "45 €",
-            slide7_precio1_desc: "pro teilnehmender Person",
+            slide7_precio1_desc: "pro teilnehmender Person.",
             slide7_precio2: "450 €",
-            slide7_precio2_desc: "für Ensembles mit 10+ Teilnehmenden",
+            slide7_precio2_desc: "für Ensembles mit 10+ Teilnehmenden.",
             slide8_titulo: "Stimmen des Festivals 2025",
-            slide8_testimonio1_autor: "Nikita, Teilnehmerin (13 Jahre):",
-            slide8_testimonio1_texto: "«Die Sprache spielt keine Rolle. Auf der Bühne verstehen wir uns alle».",
+            slide8_testimonio1_autor: "Nikita, Teilnehmer*in (13 Jahre):",
+            slide8_testimonio1_texto: "„Die Sprache spielt keine Rolle. Auf der Bühne verstehen wir uns alle.“",
             slide8_testimonio2_autor: "Herr Frederic Guix, Kulturreferent:",
-            slide8_testimonio2_texto: "«Mut und Aufrichtigkeit. Das sind die ersten Schritte der Kinder in die große Welt des Theaters».",
+            slide8_testimonio2_texto: "„Mut und Aufrichtigkeit. Das sind die ersten Schritte der Kinder in die große Welt des Theaters.“",
             slide8_testimonio3_autor: "Herr Adrià Lamelas Martínez, Bürgermeister von Lloret de Mar:",
-            slide8_testimonio3_texto: "«Es ist eine Ehre, Regisseurinnen, Regisseure und Kinder aus ganz Europa zu empfangen. Wir unterstützen Kunst, die verbindet».",
+            slide8_testimonio3_texto: "„Es ist eine Ehre, Regisseurinnen, Regisseure und Kinder aus ganz Europa zu empfangen. Wir unterstützen Kunst, die verbindet.“",
             slide9_titulo: "Organisatoren und Unterstützung",
             org_generalitat: "Generalitat de Catalunya",
             org_casamiga: "Verein Casamiga",
@@ -778,71 +803,72 @@
             org_ayuntamiento: "Stadtverwaltung Lloret de Mar",
             slide10_titulo: "Sind Sie noch am Überlegen?",
             slide11_titulo: "Machen Sie mit!",
-            slide11_tagline: "Schenken Sie den Kindern ein Erlebnis, das sie ihr Leben lang in Erinnerung behalten werden",
+            slide11_tagline: "Schenken Sie den Kindern ein Erlebnis, das sie ihr Leben lang in Erinnerung behalten werden.",
             slide11_contacto: "Kontaktieren Sie uns",
             org_casamiga_full: "Verein CASAMIGA",
             btn_anterior: "← Zurück",
-            btn_siguiente: "Weiter →"
+            btn_siguiente: "Weiter →",
+            link_message: "Hallo! Ich interessiere mich für die Teilnahme am Internationalen Kindertheaterfestival „Theater ohne Grenzen“. Bitte senden Sie mir das Anmeldeformular."
         },
         cat: {
-            slide1_titulo: "TEATRE SENSE FRONTERES",
+            slide1_titulo: "Teatre sense Fronteres",
             slide1_subtitulo: "Unint el món a través del teatre",
             slide1_tipo: "Festival Internacional de Teatre Infantil",
             slide1_fecha: "1 de març de 2026",
             slide1_lugar: "Teatre Municipal de Lloret de Mar, Catalunya",
-            slide1_tagline: "El vostre grup en un escenari internacional, sense sortir de Catalunya",
+            slide1_tagline: "El vostre grup en un escenari internacional, sense sortir de Catalunya.",
             slide2_titulo: "Sobre el festival",
-            slide2_descripcion: "Una celebració internacional del teatre que reuneix nens i adolescents de 6 a 18 anys de diferents països i cultures",
-            slide2_2025: "Primer festival: 10 grups, 5 idiomes, 400 espectadors, 8 categories",
-            slide2_2026: "Es preveuen 6 països i 8 idiomes",
+            slide2_descripcion: "Una celebració internacional del teatre que reuneix nens i adolescents de 6 a 18 anys de diferents països i cultures, aquí a Catalunya.",
+            slide2_2025: "Primer festival: 10 grups, 5 idiomes, 400 espectadors, 8 categories.",
+            slide2_2026: "Es preveuen 6 països i 8 idiomes, expandint la nostra festa teatral europea.",
             valores: "Valors:",
-            slide2_valores: "Inclusivitat, diversitat lingüística, intercanvi cultural",
+            slide2_valores: "inclusivitat, diversitat lingüística, intercanvi cultural.",
             instagram_label: "Instagram",
             slide3_titulo: "Per què participar?",
             slide3_razon1_titulo: "Experiència internacional:",
-            slide3_razon1_desc: "Un escenari multicultural, públic real, sense barreres lingüístiques",
+            slide3_razon1_desc: "un escenari multicultural, públic real, sense barreres lingüístiques, aquí a casa.",
             slide3_razon2_titulo: "Prestigi per al vostre centre:",
-            slide3_razon2_desc: "Actuar en un festival internacional de prestigi",
+            slide3_razon2_desc: "actuar en un festival internacional de prestigi a la vostra terra.",
             slide3_razon3_titulo: "Intercanvi cultural:",
-            slide3_razon3_desc: "Trobades amb grups de 6 països europeus",
+            slide3_razon3_desc: "trobades amb grups de 6 països europeus, des de Catalunya.",
             slide3_razon4_titulo: "Atmosfera de suport:",
-            slide3_razon4_desc: "Un festival de col·laboració, no de competència",
+            slide3_razon4_desc: "un festival de col·laboració, no de competència",
             slide3_razon5_titulo: "Premis:",
-            slide3_razon5_desc: "Estatuetes, diplomes i certificats internacionals i un Gran premi amb dotació econòmica",
+            slide3_razon5_desc: "estatuetes, diplomes i certificats internacionals i un Gran premi amb dotació econòmica",
             slide3_lema: "L'art esborra fronteres",
             slide4_titulo: "Novetats en 2026",
             slide4_noticia1_titulo: "Per grups d'edat:",
-            slide4_noticia1_desc: "10:00–14:00 (6–11 anys) i 16:00–20:00 (12–18 anys)",
+            slide4_noticia1_desc: "10:00–14:00 h (6–11 anys) i 16:00–20:00 h (12–18 anys).",
             slide4_noticia2_titulo: "Jurat:",
-            slide4_noticia2_desc: "Actors professionals, directors, pedagogs i experts teatrals",
+            slide4_noticia2_desc: "actors professionals, directors, pedagogs i experts teatrals.",
             slide4_noticia3_titulo: "Nous premis:",
-            slide4_noticia3_desc: "Reconeixements per a diferents gèneres teatrals",
+            slide4_noticia3_desc: "reconeixements per a diferents gèneres teatrals.",
             slide4_noticia4_titulo: "Cobertura mediàtica:",
-            slide4_noticia4_desc: "TV local i premsa de Catalunya",
+            slide4_noticia4_desc: "TV local i premsa de Catalunya.",
             slide4_noticia5_titulo: "Entrada gratuïta:",
-            slide4_noticia5_desc: "Sala plena de públic per a cada actuació",
+            slide4_noticia5_desc: "sala plena de públic per a cada actuació.",
             slide5_titulo: "Format de participació",
             slide5_formato1_titulo: "L'espectacle",
-            slide5_formato1_item1: "Durada: 10–15 minuts",
-            slide5_formato1_item2: "Muntatge: fins a 10 minuts",
-            slide5_formato1_item3: "Descripció de l'obra breu",
-            slide5_formato1_item4: "Qualsevol idioma és benvingut",
+            slide5_formato1_item1: "Durada: 10–15 minuts.",
+            slide5_formato1_item2: "Muntatge: fins a 10 minuts.",
+            slide5_formato1_item3: "Descripció de l'obra (breu).",
+            slide5_formato1_item4: "Qualsevol idioma és benvingut.",
             slide5_formato2_titulo: "Retroalimentació",
-            slide5_formato2_item1: "Professionals del teatre ofereixen comentaris cálids i recomanacions constructives a cada grup",
+            slide5_formato2_item1: "Professionals del teatre ofereixen comentaris càlids i recomanacions constructives a cada grup.",
             slide6_titulo: "Premis i reconeixement",
             slide6_premio1_titulo: "Per al grup",
             slide6_premio1_desc: "Un Gran premi amb dotació econòmica + estatueta del festival",
             slide6_premio2_titulo: "Per als participants",
             slide6_premio2_desc: "Diplomes",
-            slide6_premio3_titulo: "Adicional",
+            slide6_premio3_titulo: "Addicional",
             slide6_premio3_desc: "Premis especials",
             slide7_titulo: "Condicions i aportació",
             condicion_edad: "Edat:",
-            slide7_edad: "6–18 anys",
+            slide7_edad: "6–18 anys.",
             condicion_repertorio: "Repertori:",
-            slide7_repertorio: "Sense restriccions",
+            slide7_repertorio: "sense restriccions.",
             condicion_garantia: "Participació garantida:",
-            slide7_garantia: "Tots els grups que abonen la quota obtenen un espai escènic",
+            slide7_garantia: "tots els grups que abonen la quota obtenen un espai escènic.",
             slide7_aportacion_titulo: "Aportació organitzativa",
             slide7_precio1: "45 €",
             slide7_precio1_desc: "per participant",
@@ -850,109 +876,197 @@
             slide7_precio2_desc: "per a grups de 10+ participants",
             slide8_titulo: "Veus del Festival 2025",
             slide8_testimonio1_autor: "Nikita, participant (13 anys):",
-            slide8_testimonio1_texto: "«L'idioma no importa. A l'escenari tots ens entenem».",
+            slide8_testimonio1_texto: "«L'idioma no importa. A l'escenari tots ens entenem.»",
             slide8_testimonio2_autor: "Sr. Frederic Guix, Regidor de Cultura:",
-            slide8_testimonio2_texto: "«Valentía i sinceritat. Són els primers passos dels nens en el gran món del teatre».",
-            slide8_testimonio3_autor: "Sr. Adrià Lamelas Martínez, L'alcalde de Lloret de Mar:",
-            slide8_testimonio3_texto: "«És un honor rebre directors i nens de tota Europa aquí a Catalunya. Donem suport a l'art que uneix».",
+            slide8_testimonio2_texto: "«Valentia i sinceritat. Són els primers passos dels nens en el gran món del teatre.»",
+            slide8_testimonio3_autor: "Adrià Lamelas Martínez, L'alcalde de Lloret de Mar:",
+            slide8_testimonio3_texto: "«És un honor rebre directors i nens de tota Europa aquí a Catalunya. Donem suport a l'art que uneix.»",
             slide9_titulo: "Organitzadors i suport",
             org_generalitat: "Generalitat de Catalunya",
             org_casamiga: "Associació Casamiga",
             org_teatro: "Teatre Municipal de Lloret de Mar",
-            org_teatro_desc: "Escenari oficial del festival",
+            org_teatro_desc: "escenari oficial del festival",
             org_ayuntamiento: "Ajuntament de Lloret de Mar",
             slide10_titulo: "Encara hi estàs pensant?",
             slide11_titulo: "Uneix-te!",
-            slide11_tagline: "Regala als nens una experiència que recordaran tota la vida",
+            slide11_tagline: "Regala als nens una experiència que recordaran tota la vida, aquí a Catalunya.",
             slide11_contacto: "Contacta amb nosaltres",
             org_casamiga_full: "Associació CASAMIGA",
             btn_anterior: "← Anterior",
-            btn_siguiente: "Següent →"
+            btn_siguiente: "Següent →",
+            link_message: "Hola! M'interessa participar en el Festival Internacional de Teatre Infantil «Teatre sense Fronteres». Si us plau, envieu-me el formulari de candidatura."
         },
         pt: {
             slide1_titulo: "TEATRO SEM FRONTEIRAS",
-            slide1_subtitulo: "Conectando o mundo através do teatro",
+            slide1_subtitulo: "Unir o mundo através do teatro",
             slide1_tipo: "Festival Internacional de Teatro Infantil",
-            slide1_fecha: "1º de março de 2026",
+            slide1_fecha: "1 de março de 2026",
             slide1_lugar: "Teatro Municipal de Lloret de Mar, Espanha",
-            slide1_tagline: "Seu grupo no palco internacional da Europa",
-            slide2_titulo: "Sobre o festival",
-            slide2_descripcion: "Uma celebração internacional do teatro que reúne crianças e adolescentes de 6 a 18 anos de diferentes países e culturas",
+            slide1_tagline: "O seu grupo no palco internacional da Europa",
+            slide2_titulo: "Sobre o Festival",
+            slide2_descripcion: "Uma celebração global que reúne crianças e jovens dos 6 aos 18 anos de diferentes países e culturas através da arte teatral",
             slide2_2025: "Primeiro Festival: 10 grupos, 5 idiomas, 400 espectadores, 8 categorias",
-            slide2_2026: "6 países e 8 idiomas esperados",
+            slide2_2026: "Previsão de 6 países e 8 idiomas",
             valores: "Valores:",
-            slide2_valores: "Inclusividade, diversidade linguística, intercâmbio cultural",
+            slide2_valores: "Inclusão, diversidade linguística, intercâmbio cultural",
             instagram_label: "Instagram",
             slide3_titulo: "Por que participar?",
-            slide3_razon1_titulo: "Experiência internacional:",
-            slide3_razon1_desc: "Um palco multicultural, público real, sem barreiras linguísticas",
-            slide3_razon2_titulo: "Prestígio para seu centro:",
-            slide3_razon2_desc: "Atuar em um festival internacional de prestígio",
-            slide3_razon3_titulo: "Intercâmbio cultural:",
+            slide3_razon1_titulo: "Experiência Internacional:",
+            slide3_razon1_desc: "Um palco multicultural, público real e sem barreiras linguísticas",
+            slide3_razon2_titulo: "Prestígio para a sua Escola:",
+            slide3_razon2_desc: "Atuar num festival internacional de renome",
+            slide3_razon3_titulo: "Intercâmbio Cultural:",
             slide3_razon3_desc: "Encontros com grupos de 6 países europeus",
-            slide3_razon4_titulo: "Atmosfera de apoio:",
-            slide3_razon4_desc: "Um festival de colaboração, não de competição",
-            slide3_razon5_titulo: "Reconhecimentos:",
-            slide3_razon5_desc: "Estatuetas, diplomas, certificados internacionais e um Grande Prêmio com dotação financeira",
-            slide3_lema: "A arte apaga fronteiras",
-            slide4_titulo: "Novidades 2026",
-            slide4_noticia1_titulo: "Por grupos de idade:",
+            slide3_razon4_titulo: "Ambiente de Apoio:",
+            slide3_razon4_desc: "Um festival de colaboração e partilha, não de competição",
+            slide3_razon5_titulo: "Reconhecimento:",
+            slide3_razon5_desc: "Estatuetas, diplomas, certificados internacionais e um Grande Prémio monetário",
+            slide3_lema: "A arte não tem fronteiras",
+            slide4_titulo: "Novidades para 2026",
+            slide4_noticia1_titulo: "Por Faixas Etárias:",
             slide4_noticia1_desc: "10:00–14:00 (6–11 anos) e 16:00–20:00 (12–18 anos)",
             slide4_noticia2_titulo: "Júri:",
-            slide4_noticia2_desc: "Atores profissionais, diretores, pedagogos e especialistas em teatro",
-            slide4_noticia3_titulo: "Novos prêmios:",
-            slide4_noticia3_desc: "Reconhecimentos para diferentes gêneros teatrais",
-            slide4_noticia4_titulo: "Cobertura de mídia:",
-            slide4_noticia4_desc: "TV local e imprensa regional",
-            slide4_noticia5_titulo: "Entrada gratuita:",
-            slide4_noticia5_desc: "Casa cheia para cada apresentação",
-            slide5_titulo: "Formato de participação",
-            slide5_formato1_titulo: "O espetáculo",
+            slide4_noticia2_desc: "Atores profissionais, encenadores, pedagogos e especialistas em teatro",
+            slide4_noticia3_titulo: "Novos Prémios:",
+            slide4_noticia3_desc: "Reconhecimento para diversos géneros teatrais",
+            slide4_noticia4_titulo: "Cobertura Mediática:",
+            slide4_noticia4_desc: "Televisão local e imprensa regional",
+            slide4_noticia5_titulo: "Entrada Livre:",
+            slide4_noticia5_desc: "Lotação esgotada para cada atuação",
+            slide5_titulo: "Formato de Participação",
+            slide5_formato1_titulo: "O Espetáculo",
             slide5_formato1_item1: "Duração: 10–15 minutos",
-            slide5_formato1_item2: "Montagem: até 10 minutos",
+            slide5_formato1_item2: "Montagem de palco: até 10 minutos",
             slide5_formato1_item3: "Breve descrição da obra",
             slide5_formato1_item4: "Qualquer idioma é bem-vindo",
             slide5_formato2_titulo: "Feedback",
-            slide5_formato2_item1: "Profissionais de teatro oferecem comentários calorosos e recomendações construtivas a cada grupo",
-            slide6_titulo: "Prêmios e reconhecimento",
-            slide6_premio1_titulo: "Para o grupo",
-            slide6_premio1_desc: "Um Grande Prêmio com dotação financeira + Estatueta do festival",
-            slide6_premio2_titulo: "Para os participantes",
-            slide6_premio2_desc: "Diplomas",
+            slide5_formato2_item1: "Profissionais de teatro oferecem comentários motivadores e recomendações construtivas a cada grupo",
+            slide6_titulo: "Prémios e Reconhecimento",
+            slide6_premio1_titulo: "Para o Grupo",
+            slide6_premio1_desc: "Grande Prémio com dotação financeira + Estatueta do Festival",
+            slide6_premio2_titulo: "Para os Participantes",
+            slide6_premio2_desc: "Diplomas Individuais",
             slide6_premio3_titulo: "Adicional",
-            slide6_premio3_desc: "Prêmios especiais",
-            slide7_titulo: "Condições e contribuição",
+            slide6_premio3_desc: "Prémios Especiais por Categoria",
+            slide7_titulo: "Condições e Inscrição",
             condicion_edad: "Idade:",
             slide7_edad: "6–18 anos",
             condicion_repertorio: "Repertório:",
             slide7_repertorio: "Sem restrições",
-            condicion_garantia: "Participação garantida:",
-            slide7_garantia: "Todos os grupos que pagam a taxa obtêm tempo de palco",
-            slide7_aportacion_titulo: "Taxa organizacional",
+            condicion_garantia: "Participação Garantida:",
+            slide7_garantia: "Todos os grupos inscritos têm tempo de palco garantido",
+            slide7_aportacion_titulo: "Taxa de Participação",
             slide7_precio1: "45 €",
             slide7_precio1_desc: "por participante",
             slide7_precio2: "450 €",
             slide7_precio2_desc: "para grupos de 10+ participantes",
             slide8_titulo: "Vozes do Festival 2025",
             slide8_testimonio1_autor: "Nikita, Participante (13 anos):",
-            slide8_testimonio1_texto: "«O idioma não importa. No palco todos nos entendemos».",
-            slide8_testimonio2_autor: "Sr. Frederic Guix, Conselheiro de Cultura:",
-            slide8_testimonio2_texto: "«Coragem e sinceridade. São os primeiros passos das crianças no grande mundo do teatro».",
-            slide8_testimonio3_autor: "Sr. Adrià Lamelas Martínez, Prefeito de Lloret de Mar:",
-            slide8_testimonio3_texto: "«É uma honra receber diretores e crianças de toda a Europa. Apoiamos a arte que une».",
-            slide9_titulo: "Organizadores e apoio",
+            slide8_testimonio1_texto: "«O idioma não importa. No palco todos nos entendemos.»",
+            slide8_testimonio2_autor: "Sr. Frederic Guix, Vereador da Cultura:",
+            slide8_testimonio2_texto: "«Coragem e sinceridade. São os primeiros passos das crianças no grande mundo do teatro.»",
+            slide8_testimonio3_autor: "Sr. Adrià Lamelas Martínez, Presidente da Câmara de Lloret de Mar:",
+            slide8_testimonio3_texto: "«É uma honra receber encenadores e crianças de toda a Europa. Apoiamos a arte que une.»",
+            slide9_titulo: "Organizadores e Apoio",
             org_generalitat: "Generalitat de Catalunya",
             org_casamiga: "Associação Casamiga",
             org_teatro: "Teatro Municipal de Lloret de Mar",
-            org_teatro_desc: "Palco oficial do festival",
-            org_ayuntamiento: "Prefeitura de Lloret de Mar",
-            slide10_titulo: "Ainda está pensando?",
+            org_teatro_desc: "Palco Oficial do Festival",
+            org_ayuntamiento: "Câmara Municipal de Lloret de Mar",
+            slide10_titulo: "Ainda tem dúvidas?",
             slide11_titulo: "Junte-se a nós!",
-            slide11_tagline: "Dê às crianças uma experiência que elas lembrarão toda a vida",
-            slide11_contacto: "Entre em contato conosco",
+            slide11_tagline: "Ofereça às crianças uma experiência que recordarão para toda a vida",
+            slide11_contacto: "Contacte-nos",
             org_casamiga_full: "Associação CASAMIGA",
             btn_anterior: "← Anterior",
-            btn_siguiente: "Próximo →"
+            btn_siguiente: "Seguinte →",
+            link_message: "Olá! Estou interessado em participar no Festival Internacional de Teatro Infantil «Teatro Sem Fronteiras». Por favor, enviem-me o formulário de inscrição."
+        },
+        it: {
+            slide1_titulo: "TEATRO SENZA FRONTIERE",
+            slide1_subtitulo: "Unire il mondo attraverso il teatro",
+            slide1_tipo: "Festival Internazionale di Teatro per Bambini",
+            slide1_fecha: "1 marzo 2026",
+            slide1_lugar: "Teatro Municipale di Lloret de Mar, Spagna",
+            slide1_tagline: "Il vostro gruppo sul palcoscenico internazionale d'Europa",
+            slide2_titulo: "Sul Festival",
+            slide2_descripcion: "Una celebrazione internazionale che riunisce bambini e ragazzi dai 6 ai 18 anni di diversi paesi e culture attraverso l'arte teatrale",
+            slide2_2025: "Primo Festival: 10 gruppi, 5 lingue, 400 spettatori, 8 categorie",
+            slide2_2026: "Previsti 6 paesi e 8 lingue",
+            valores: "Valori:",
+            slide2_valores: "Inclusività, diversità linguistica, scambio culturale",
+            instagram_label: "Instagram",
+            slide3_titulo: "Perché partecipare?",
+            slide3_razon1_titulo: "Esperienza Internazionale:",
+            slide3_razon1_desc: "Un palcoscenico multiculturale, pubblico reale e nessuna barriera linguistica",
+            slide3_razon2_titulo: "Prestigio per la vostra Scuola:",
+            slide3_razon2_desc: "Esibirsi in un prestigioso festival internazionale",
+            slide3_razon3_titulo: "Scambio Culturale:",
+            slide3_razon3_desc: "Incontri con gruppi provenienti da 6 paesi europei",
+            slide3_razon4_titulo: "Atmosfera di Sostegno:",
+            slide3_razon4_desc: "Un festival basato sulla collaborazione, non sulla competizione",
+            slide3_razon5_titulo: "Riconoscimenti:",
+            slide3_razon5_desc: "Statuette, diplomi, certificati internazionali e un Gran Premio con dotazione economica",
+            slide3_lema: "L'arte cancella i confini",
+            slide4_titulo: "Novità 2026",
+            slide4_noticia1_titulo: "Per Fasce d'Età:",
+            slide4_noticia1_desc: "10:00–14:00 (6–11 anni) e 16:00–20:00 (12–18 anni)",
+            slide4_noticia2_titulo: "Giuria:",
+            slide4_noticia2_desc: "Attori professionisti, registi, pedagoghi ed esperti teatrali",
+            slide4_noticia3_titulo: "Nuovi Premi:",
+            slide4_noticia3_desc: "Riconoscimenti per diversi generi teatrali",
+            slide4_noticia4_titulo: "Copertura Mediatica:",
+            slide4_noticia4_desc: "TV locale e stampa regionale",
+            slide4_noticia5_titulo: "Ingresso Gratuito:",
+            slide4_noticia5_desc: "Sala piena per ogni spettacolo",
+            slide5_titulo: "Format di Partecipazione",
+            slide5_formato1_titulo: "Lo Spettacolo",
+            slide5_formato1_item1: "Durata: 10–15 minuti",
+            slide5_formato1_item2: "Montaggio scenico: fino a 10 minuti",
+            slide5_formato1_item3: "Breve descrizione dell'opera",
+            slide5_formato1_item4: "Qualsiasi lingua è benvenuta",
+            slide5_formato2_titulo: "Feedback",
+            slide5_formato2_item1: "Professionisti del teatro offrono commenti calorosi e raccomandazioni costruttive a ogni gruppo",
+            slide6_titulo: "Premi e Riconoscimenti",
+            slide6_premio1_titulo: "Per il Gruppo",
+            slide6_premio1_desc: "Gran Premio con dotazione economica + Statuetta del Festival",
+            slide6_premio2_titulo: "Per i Partecipanti",
+            slide6_premio2_desc: "Diplomi Individuali",
+            slide6_premio3_titulo: "Inoltre",
+            slide6_premio3_desc: "Premi Speciali per categoria",
+            slide7_titulo: "Condizioni e Iscrizione",
+            condicion_edad: "Età:",
+            slide7_edad: "6–18 anni",
+            condicion_repertorio: "Repertorio:",
+            slide7_repertorio: "Nessuna restrizione",
+            condicion_garantia: "Partecipazione Garantita:",
+            slide7_garantia: "Tutti i gruppi iscritti hanno il tempo di scena garantito",
+            slide7_aportacion_titulo: "Quota di Partecipazione",
+            slide7_precio1: "45 €",
+            slide7_precio1_desc: "per partecipante",
+            slide7_precio2: "450 €",
+            slide7_precio2_desc: "per gruppi di 10+ partecipanti",
+            slide8_titulo: "Voci dal Festival 2025",
+            slide8_testimonio1_autor: "Nikita, Partecipante (13 anni):",
+            slide8_testimonio1_texto: "«La lingua non conta. Sul palco ci capiamo tutti.»",
+            slide8_testimonio2_autor: "Sig. Frederic Guix, Assessore alla Cultura:",
+            slide8_testimonio2_texto: "«Coraggio e sincerità. Sono i primi passi dei bambini nel grande mondo del teatro.»",
+            slide8_testimonio3_autor: "Sig. Adrià Lamelas Martínez, Sindaco di Lloret de Mar:",
+            slide8_testimonio3_texto: "«È un onore accogliere registi e bambini da tutta Europa. Sosteniamo l'arte che unisce.»",
+            slide9_titulo: "Organizzatori e Sostenitori",
+            org_generalitat: "Generalitat de Catalunya",
+            org_casamiga: "Associazione Casamiga",
+            org_teatro: "Teatro Municipale di Lloret de Mar",
+            org_teatro_desc: "Palcoscenico Ufficiale del Festival",
+            org_ayuntamiento: "Municipio di Lloret de Mar",
+            slide10_titulo: "Ci stai ancora pensando?",
+            slide11_titulo: "Unisciti a noi!",
+            slide11_tagline: "Regala ai bambini un'esperienza che ricorderanno per tutta la vita",
+            slide11_contacto: "Contattaci",
+            org_casamiga_full: "Associazione CASAMIGA",
+            btn_anterior: "← Precedente",
+            btn_siguiente: "Successivo →",
+            link_message: "Salve! Sono interessato a partecipare al Festival Internazionale di Teatro per Bambini «Teatro Senza Frontiere». Per favore, inviatemi il modulo di candidatura."
         }
     };
 
@@ -970,6 +1084,21 @@
                 element.textContent = translations[lang][key];
             }
         });
+
+        // Update WhatsApp and Telegram links dynamically
+        const msg = translations[lang].link_message || translations['es'].link_message;
+        const encodedMsg = encodeURIComponent(msg);
+        
+        const whatsappLink = document.getElementById('whatsapp-link');
+        const telegramLink = document.getElementById('telegram-link');
+        
+        if (whatsappLink) {
+            whatsappLink.href = `https://wa.me/34698999033?text=${encodedMsg}`;
+        }
+        
+        if (telegramLink) {
+            telegramLink.href = `https://t.me/+34698999033?text=${encodedMsg}`;
+        }
         
         // Google Analytics Event
         const urlParams = new URLSearchParams(window.location.search);
@@ -995,6 +1124,12 @@
         
         const activeContainer = containers[currentSlide - 1];
         if (activeContainer) activeContainer.scrollTop = 0;
+        
+        // GA4 Event: Track slide view
+        gtag('event', 'slide_view', {
+            'slide_number': currentSlide,
+            'slide_name': 'Slide ' + currentSlide
+        });
     }
 
     function nextSlide() {
@@ -1034,6 +1169,35 @@
         if (touchStartX - touchEndX > 50) nextSlide();
         if (touchEndX - touchStartX > 50) previousSlide();
     }
+    
+    // Time Tracking
+    let startTime = Date.now();
+    let timeTracked = {30: false, 60: false, 120: false};
+
+    setInterval(function() {
+        const timeSpent = Math.round((Date.now() - startTime) / 1000);
+        Object.keys(timeTracked).forEach(threshold => {
+            if (timeSpent >= parseInt(threshold) && !timeTracked[threshold]) {
+                gtag('event', 'time_on_presentation', {
+                    'seconds': parseInt(threshold)
+                });
+                timeTracked[threshold] = true;
+            }
+        });
+    }, 5000);
+
+    // Track Contact Clicks
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactLinks = document.querySelectorAll('.contact-info a');
+        contactLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                gtag('event', 'contact_click', {
+                    'contact_type': this.innerText.includes('@') ? 'email' : (this.innerText.includes('+') ? 'phone' : 'messenger'),
+                    'link_url': this.href
+                });
+            });
+        });
+    });
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', function() {
@@ -1041,7 +1205,14 @@
         const urlLang = new URLSearchParams(window.location.search).get('lang');
         const browserLang = navigator.language.split('-')[0];
         
-        const langToUse = urlLang || savedLang || (translations[browserLang] ? browserLang : 'es');
+        // Check if language is supported, otherwise fallback to 'es'
+        const supportedLangs = ['es', 'en', 'fr', 'de', 'cat', 'pt', 'it'];
+        let langToUse = urlLang || savedLang || browserLang;
+        
+        if (!supportedLangs.includes(langToUse)) {
+            langToUse = 'es';
+        }
+        
         setLanguage(langToUse);
         showSlide(currentSlide);
     });
