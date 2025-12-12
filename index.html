@@ -376,6 +376,7 @@ logo_theatr
 
 <script>
       let currentSlide = 1;
+        const totalSlides = 11;
       const totalSlides = 11;
 // TRANSLATIONS
 const translations = {
@@ -905,11 +906,7 @@ const translations = {
 };
 
 // Функции переключения языка и навигации
-        // Variables for slide navigation
-        let currentSlide = 1;
-        const totalSlides = 11;
 function setLanguage(lang) {
-    localStorage.setItem('selectedLanguage', lang);
     document.documentElement.lang = lang;
     document.getElementById('langSelect').value = lang;
     
@@ -1077,6 +1074,7 @@ window.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 
 
