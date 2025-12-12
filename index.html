@@ -1,26 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3YEXQCNQSD"></script>
-    <script>
-        // 1. Объявляем глобальные переменные ОДИН РАЗ здесь
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        
-        // Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('uid'); // Ищем ?uid=...
-
-        gtag('js', new Date());
-        
-        // Логика запуска GA перенесена в checkCookieConsent внизу,
-        // здесь мы ничего не запускаем, чтобы соблюсти закон.
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEATRO SIN FRONTERAS 2026</title>
     <link rel="icon" type="image/png" href="images/favicon4.png">
+
+    <script>
+        // Получаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        // Сохраняем userId в глобальную переменную для доступа из нижнего скрипта
+        window.userId = urlParams.get('uid'); 
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        // === GOOGLE CONSENT MODE V2 SETUP ===
+        // Устанавливаем настройки по умолчанию: всё запрещено
+        // Это соответствует требованию "direct commands"
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied',
+            'wait_for_update': 500 // Ждем обновления 500мс перед отправкой
+        });
+        
+        // Если пользователь уже давал согласие ранее (сохранено в localStorage)
+        if (localStorage.getItem('cookieConsent') === 'true') {
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'analytics_storage': 'granted'
+            });
+        }
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3YEXQCNQSD"></script>
+    
+    <script>
+        gtag('js', new Date());
+        
+        // В Basic Mode мы запускаем config только если есть согласие
+        if (localStorage.getItem('cookieConsent') === 'true') {
+            if (window.userId) {
+                gtag('config', 'G-3YEXQCNQSD', { 'user_id': window.userId });
+            } else {
+                gtag('config', 'G-3YEXQCNQSD');
+            }
+        }
+    </script>
+
     <style>
         /* ===== STYLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -118,7 +149,7 @@
         .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 100%; max-width: 1200px; }
         .organizer-box { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 250px; }
         
-        /* LOGO STYLE FOR SLIDE 9 */
+        /* LOGO STYLE FOR SLIDE 9 - LARGE, NO BACKGROUND */
         .organizer-logo { 
             height: clamp(120px, 18vw, 180px); 
             width: auto; 
@@ -209,13 +240,13 @@
 
 <div class="language-selector">
     <select id="langSelect" onchange="setLanguage(this.value)">
-        <option value="cat">Català</option>        
+        <option value="cat">Català</option>
         <option value="es">Español</option>
         <option value="fr">Français</option>
         <option value="de">Deutsch</option>
         <option value="pt">Português</option>
         <option value="it">Italiano</option>
-        <option value="en">English</option>        
+        <option value="en">English</option>
     </select>
 </div>
 
@@ -529,6 +560,10 @@
 <script>
     let currentSlide = 1;
     const totalSlides = 11;
+
+    // GA Variables
+    // Не объявляем здесь const urlParams, так как они уже объявлены в head
+    // Используем window.userId, который мы сохранили ранее
 
     // TRANSLATIONS
     const translations = {
@@ -1176,13 +1211,13 @@
         
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            if (translations[lang][key]) {
+            if (translations[lang] && translations[lang][key]) {
                 element.textContent = translations[lang][key];
             }
         });
 
         // Update WhatsApp and Telegram links dynamically
-        const msg = translations[lang].link_message || translations['es'].link_message;
+        const msg = (translations[lang] && translations[lang].link_message) ? translations[lang].link_message : translations['es'].link_message;
         const encodedMsg = encodeURIComponent(msg);
         
         const whatsappLink = document.getElementById('whatsapp-link');
@@ -1303,12 +1338,21 @@
 
     // COOKIE CONSENT LOGIC
     function checkCookieConsent() {
-        if (localStorage.getItem('cookieConsent') === 'true') {
+        const consent = localStorage.getItem('cookieConsent');
+        
+        if (consent === 'true') {
+            // Already accepted
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'analytics_storage': 'granted'
+            });
             enableAnalytics();
-        } else if (localStorage.getItem('cookieConsent') === 'false') {
-            // Do nothing, analytics remain disabled
+        } else if (consent === 'false') {
+            // Previously declined, do nothing (default is denied)
         } else {
-            // Show banner
+            // No choice yet, show banner
             document.getElementById('cookie-banner').style.display = 'flex';
         }
     }
@@ -1316,21 +1360,31 @@
     function acceptCookies() {
         localStorage.setItem('cookieConsent', 'true');
         document.getElementById('cookie-banner').style.display = 'none';
+        
+        // Update consent state to granted
+        gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+        });
+        
         enableAnalytics();
     }
 
     function declineCookies() {
         localStorage.setItem('cookieConsent', 'false');
         document.getElementById('cookie-banner').style.display = 'none';
+        // No update needed, default was denied
     }
 
     function enableAnalytics() {
         // Activate Google Analytics Config
+        // This runs ONLY after consent is granted
         if (typeof gtag === 'function') {
-            // userId is already declared in the head script, so we can access it here
-            if (window.userId) { 
-                 gtag('config', 'G-3YEXQCNQSD', {
-                    'user_id': window.userId,
+            if (userId) {
+                gtag('config', 'G-3YEXQCNQSD', {
+                    'user_id': userId,
                     'send_page_view': true
                 });
             } else {
