@@ -10,16 +10,9 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
-        // Настройка GA4 с User ID (если он есть)
-        if (userId) {
-            gtag('config', 'G-3YEXQCNQSD', {
-                'user_id': userId,
-                'send_page_view': true
-            });
-        } else {
-            gtag('config', 'G-3YEXQCNQSD');
-        }
+        
+        // ВНИМАНИЕ: Команда gtag('config') удалена отсюда. 
+        // Она сработает только если пользователь нажмет "Принять" в баннере.
     </script>
 
     <meta charset="UTF-8">
@@ -27,7 +20,7 @@
     <title>TEATRO SIN FRONTERAS 2026</title>
     <link rel="icon" type="image/png" href="images/favicon4.png">
     <style>
-        /* ===== STYLES ===== */
+        /* ===== GLOBAL STYLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
         body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
@@ -36,6 +29,63 @@
         .language-selector { position:fixed; top:30px; left:30px; z-index:2000; background:white; border-radius:25px; padding:8px 15px; box-shadow:0 4px 15px rgba(0,0,0,0.2); border:2px solid #00A8E8; }
         .language-selector select { background:transparent; border:none; font-weight:bold; color:#00A8E8; cursor:pointer; font-size:14px; outline: none; }
 
+        /* Cookie Banner Styles */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+            z-index: 9999;
+            display: none; /* Скрыт по умолчанию, JS покажет если нужно */
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-top: 4px solid #00A8E8;
+        }
+        .cookie-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            width: 100%;
+        }
+        .cookie-text {
+            font-size: 14px;
+            color: #555;
+            flex: 1;
+            min-width: 250px;
+            text-align: left;
+        }
+        .cookie-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .cookie-btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .cookie-accept { background: #00A8E8; color: white; }
+        .cookie-accept:hover { background: #0369A1; }
+        .cookie-decline { background: #e0e0e0; color: #555; }
+        .cookie-decline:hover { background: #d0d0d0; }
+
+        @media (max-width: 768px) {
+            .cookie-text { text-align: center; }
+            .cookie-content { flex-direction: column; }
+        }
+
+        /* Slide Container */
         .slide-container { width: 100vw; height: 100vh; display: none; overflow: auto; }
         .slide-container.active { display: block; }
         .slide { width: 100%; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
@@ -66,12 +116,13 @@
         .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 100%; max-width: 1200px; }
         .organizer-box { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 250px; }
         
-        /* LOGO STYLE FOR SLIDE 9 - NO BACKGROUND */
+        /* LOGO STYLE FOR SLIDE 9 - LARGE, NO BACKGROUND */
         .organizer-logo { 
-            height: clamp(120px, 18vw, 180px); 
+            height: clamp(120px, 18vw, 180px); /* Большой размер */
             width: auto; 
             max-width: 100%;
             object-fit: contain; 
+            /* Фильтры и фон убраны для отображения оригинальных цветов */
         }
         
         .organizer-box h3 { font-size: clamp(18px, 2.2vw, 24px); margin: 0; font-weight: bold; color: white; }
@@ -157,18 +208,32 @@
 
 <div class="language-selector">
     <select id="langSelect" onchange="setLanguage(this.value)">
-        <option value="cat">Català</option>
         <option value="es">Español</option>
+        <option value="en">English</option>
         <option value="fr">Français</option>
         <option value="de">Deutsch</option>
+        <option value="cat">Català</option>
         <option value="pt">Português</option>
         <option value="it">Italiano</option>
-        <option value="en">English</option>
     </select>
 </div>
 
 <div class="slide-counter">
     <span id="current-slide">1</span> / <span id="total-slides">11</span>
+</div>
+
+<div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-content">
+        <div class="cookie-text">
+            <span data-i18n="cookie_text">Usamos cookies para mejorar su experiencia y analizar el tráfico.</span>
+            <br>
+            <a href="privacy.html" target="_blank" style="color: #00A8E8; text-decoration: underline; font-size: 12px; margin-top: 5px; display: inline-block;" data-i18n="cookie_policy">Leer Política de Privacidad</a>
+        </div>
+        <div class="cookie-buttons">
+            <button onclick="acceptCookies()" class="cookie-btn cookie-accept" data-i18n="cookie_accept">Aceptar</button>
+            <button onclick="declineCookies()" class="cookie-btn cookie-decline" data-i18n="cookie_decline">Rechazar</button>
+        </div>
+    </div>
 </div>
 
 <div class="slide-container active">
@@ -464,6 +529,10 @@
     let currentSlide = 1;
     const totalSlides = 11;
 
+    // GA Variables
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('uid');
+
     // TRANSLATIONS
     const translations = {
         es: {
@@ -550,7 +619,11 @@
             org_casamiga_full: "Asociación CASAMIGA",
             btn_anterior: "← Anterior",
             btn_siguiente: "Siguiente →",
-            link_message: "¡Hola! Me interesa participar en el Festival Internacional de Teatro Infantil \"Teatro Sin Fronteras\". Por favor, envíenme el formulario de solicitud."
+            link_message: "¡Hola! Me interesa participar en el Festival Internacional de Teatro Infantil \"Teatro Sin Fronteras\". Por favor, envíenme el formulario de solicitud.",
+            cookie_text: "Usamos cookies para mejorar su experiencia y analizar el tráfico.",
+            cookie_accept: "Aceptar",
+            cookie_decline: "Rechazar",
+            cookie_policy: "Leer Política de Privacidad"
         },
         en: {
             slide1_titulo: "THEATER WITHOUT BORDERS",
@@ -636,7 +709,11 @@
             org_casamiga_full: "CASAMIGA Association",
             btn_anterior: "← Previous",
             btn_siguiente: "Next →",
-            link_message: "Hello! I am interested in participating in the International Children's Theater Festival 'Theater Without Borders'. Please send me the application form."
+            link_message: "Hello! I am interested in participating in the International Children's Theater Festival 'Theater Without Borders'. Please send me the application form.",
+            cookie_text: "We use cookies to improve your experience and analyze traffic.",
+            cookie_accept: "Accept",
+            cookie_decline: "Decline",
+            cookie_policy: "Read Privacy Policy"
         },
         fr: {
             slide1_titulo: "Théâtre sans Frontières",
@@ -722,7 +799,11 @@
             org_casamiga_full: "Association CASAMIGA",
             btn_anterior: "← Précédent",
             btn_siguiente: "Suivant →",
-            link_message: "Bonjour ! Je suis intéressé par la participation au Festival International de Théâtre pour Enfants « Théâtre sans Frontières ». Veuillez m'envoyer le formulaire de candidature."
+            link_message: "Bonjour ! Je suis intéressé par la participation au Festival International de Théâtre pour Enfants « Théâtre sans Frontières ». Veuillez m'envoyer le formulaire de candidature.",
+            cookie_text: "Nous utilisons des cookies pour améliorer votre expérience et analyser le trafic.",
+            cookie_accept: "Accepter",
+            cookie_decline: "Refuser",
+            cookie_policy: "Lire la politique de confidentialité"
         },
         de: {
             slide1_titulo: "Theater ohne Grenzen",
@@ -808,7 +889,11 @@
             org_casamiga_full: "Verein CASAMIGA",
             btn_anterior: "← Zurück",
             btn_siguiente: "Weiter →",
-            link_message: "Hallo! Ich interessiere mich für die Teilnahme am Internationalen Kindertheaterfestival „Theater ohne Grenzen“. Bitte senden Sie mir das Anmeldeformular."
+            link_message: "Hallo! Ich interessiere mich für die Teilnahme am Internationalen Kindertheaterfestival „Theater ohne Grenzen“. Bitte senden Sie mir das Anmeldeformular.",
+            cookie_text: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern und den Datenverkehr zu analysieren.",
+            cookie_accept: "Akzeptieren",
+            cookie_decline: "Ablehnen",
+            cookie_policy: "Datenschutzerklärung lesen"
         },
         cat: {
             slide1_titulo: "Teatre sense Fronteres",
@@ -894,7 +979,11 @@
             org_casamiga_full: "Associació CASAMIGA",
             btn_anterior: "← Anterior",
             btn_siguiente: "Següent →",
-            link_message: "Hola! M'interessa participar en el Festival Internacional de Teatre Infantil «Teatre sense Fronteres». Si us plau, envieu-me el formulari de candidatura."
+            link_message: "Hola! M'interessa participar en el Festival Internacional de Teatre Infantil «Teatre sense Fronteres». Si us plau, envieu-me el formulari de candidatura.",
+            cookie_text: "Utilitzem galetes per millorar la vostra experiència i analitzar el trànsit.",
+            cookie_accept: "Acceptar",
+            cookie_decline: "Rebutjar",
+            cookie_policy: "Llegir Política de Privacitat"
         },
         pt: {
             slide1_titulo: "TEATRO SEM FRONTEIRAS",
@@ -980,7 +1069,11 @@
             org_casamiga_full: "Associação CASAMIGA",
             btn_anterior: "← Anterior",
             btn_siguiente: "Seguinte →",
-            link_message: "Olá! Estou interessado em participar no Festival Internacional de Teatro Infantil «Teatro Sem Fronteiras». Por favor, enviem-me o formulário de inscrição."
+            link_message: "Olá! Estou interessado em participar no Festival Internacional de Teatro Infantil «Teatro Sem Fronteiras». Por favor, enviem-me o formulário de inscrição.",
+            cookie_text: "Utilizamos cookies para melhorar a sua experiência e analisar o tráfego.",
+            cookie_accept: "Aceitar",
+            cookie_decline: "Recusar",
+            cookie_policy: "Ler Política de Privacidade"
         },
         it: {
             slide1_titulo: "TEATRO SENZA FRONTIERE",
@@ -1066,7 +1159,11 @@
             org_casamiga_full: "Associazione CASAMIGA",
             btn_anterior: "← Precedente",
             btn_siguiente: "Successivo →",
-            link_message: "Salve! Sono interessato a partecipare al Festival Internazionale di Teatro per Bambini «Teatro Senza Frontiere». Per favore, inviatemi il modulo di candidatura."
+            link_message: "Salve! Sono interessato a partecipare al Festival Internazionale di Teatro per Bambini «Teatro Senza Frontiere». Per favore, inviatemi il modulo di candidatura.",
+            cookie_text: "Utilizziamo i cookie per migliorare la tua esperienza e analizzare il traffico.",
+            cookie_accept: "Accettare",
+            cookie_decline: "Rifiutare",
+            cookie_policy: "Leggi l'informativa sulla privacy"
         }
     };
 
@@ -1075,8 +1172,10 @@
         document.documentElement.lang = lang;
         document.getElementById('langSelect').value = lang;
         
-        // Save preference
-        localStorage.setItem('selectedLanguage', lang);
+        // Save preference only if cookies accepted
+        if (localStorage.getItem('cookieConsent') === 'true') {
+            localStorage.setItem('selectedLanguage', lang);
+        }
         
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
@@ -1100,14 +1199,14 @@
             telegramLink.href = `https://t.me/+34698999033?text=${encodedMsg}`;
         }
         
-        // Google Analytics Event
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('ref');
-        gtag('event', 'language_change', {
-            'event_category': 'engagement',
-            'event_label': lang,
-            'user_id': userId
-        });
+        // Google Analytics Event (only if consented)
+        if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
+            gtag('event', 'language_change', {
+                'event_category': 'engagement',
+                'event_label': lang,
+                'user_id': userId
+            });
+        }
     }
 
     function showSlide(n) {
@@ -1125,11 +1224,13 @@
         const activeContainer = containers[currentSlide - 1];
         if (activeContainer) activeContainer.scrollTop = 0;
         
-        // GA4 Event: Track slide view
-        gtag('event', 'slide_view', {
-            'slide_number': currentSlide,
-            'slide_name': 'Slide ' + currentSlide
-        });
+        // GA4 Event: Track slide view (only if consented)
+        if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
+            gtag('event', 'slide_view', {
+                'slide_number': currentSlide,
+                'slide_name': 'Slide ' + currentSlide
+            });
+        }
     }
 
     function nextSlide() {
@@ -1175,15 +1276,17 @@
     let timeTracked = {30: false, 60: false, 120: false};
 
     setInterval(function() {
-        const timeSpent = Math.round((Date.now() - startTime) / 1000);
-        Object.keys(timeTracked).forEach(threshold => {
-            if (timeSpent >= parseInt(threshold) && !timeTracked[threshold]) {
-                gtag('event', 'time_on_presentation', {
-                    'seconds': parseInt(threshold)
-                });
-                timeTracked[threshold] = true;
-            }
-        });
+        if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+            Object.keys(timeTracked).forEach(threshold => {
+                if (timeSpent >= parseInt(threshold) && !timeTracked[threshold]) {
+                    gtag('event', 'time_on_presentation', {
+                        'seconds': parseInt(threshold)
+                    });
+                    timeTracked[threshold] = true;
+                }
+            });
+        }
     }, 5000);
 
     // Track Contact Clicks
@@ -1191,13 +1294,52 @@
         const contactLinks = document.querySelectorAll('.contact-info a');
         contactLinks.forEach(link => {
             link.addEventListener('click', function() {
-                gtag('event', 'contact_click', {
-                    'contact_type': this.innerText.includes('@') ? 'email' : (this.innerText.includes('+') ? 'phone' : 'messenger'),
-                    'link_url': this.href
-                });
+                if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
+                    gtag('event', 'contact_click', {
+                        'contact_type': this.innerText.includes('@') ? 'email' : (this.innerText.includes('+') ? 'phone' : 'messenger'),
+                        'link_url': this.href
+                    });
+                }
             });
         });
     });
+
+    // COOKIE CONSENT LOGIC
+    function checkCookieConsent() {
+        if (localStorage.getItem('cookieConsent') === 'true') {
+            enableAnalytics();
+        } else if (localStorage.getItem('cookieConsent') === 'false') {
+            // Do nothing, analytics remain disabled
+        } else {
+            // Show banner
+            document.getElementById('cookie-banner').style.display = 'flex';
+        }
+    }
+
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'true');
+        document.getElementById('cookie-banner').style.display = 'none';
+        enableAnalytics();
+    }
+
+    function declineCookies() {
+        localStorage.setItem('cookieConsent', 'false');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+
+    function enableAnalytics() {
+        // Activate Google Analytics Config
+        if (typeof gtag === 'function') {
+            if (userId) {
+                gtag('config', 'G-3YEXQCNQSD', {
+                    'user_id': userId,
+                    'send_page_view': true
+                });
+            } else {
+                gtag('config', 'G-3YEXQCNQSD');
+            }
+        }
+    }
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', function() {
@@ -1215,6 +1357,7 @@
         
         setLanguage(langToUse);
         showSlide(currentSlide);
+        checkCookieConsent(); // Check cookies on load
     });
 </script>
 </body>
