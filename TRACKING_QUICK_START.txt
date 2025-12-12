@@ -1,0 +1,118 @@
+TEATRO SIN FRONTERAS 2026 - EMAIL TRACKING QUICK START
+======================================================
+
+=== WHAT'S ALREADY IMPLEMENTED ===
+
+The index.html file includes:
+✓ Google Analytics 4 tracking
+✓ User ID tracking via 'ref' URL parameter
+✓ Click event tracking on all buttons/links
+✓ Scroll depth tracking (25%, 50%, 75%, 100%)
+✓ Time on page tracking (30s, 60s, 120s, 300s)
+✓ Language change tracking (6 languages)
+✓ Session duration tracking
+✓ Multilingual presentation (6 languages)
+✓ Responsive design
+✓ All engagement data tied to user_id
+
+=== WHAT YOU NEED TO DO ===
+
+1. CRITICAL: Get your GA4 Property ID
+   - Go to Google Analytics 4
+   - Find your Property ID (format: G-XXXXXXXXXX)
+   - Edit line 980 in index.html
+   - Replace: G-XXXXXXXXXX
+   - With: Your actual Property ID
+
+2. Enable User-ID Feature in GA4
+   - Admin > Property Settings
+   - Enable "User-ID"
+   - This links emails to web sessions
+
+3. Create Email Template with Tracking
+   - Use HTML email format
+   - Include tracking pixel in footer:
+     <img src="https://tracking.example.com/pixel?email=EMAIL&campaign=festival" 
+          width="1" height="1" style="display:none;">
+   - Add UTM parameters to all links:
+     ?ref=EMAIL&utm_source=email&utm_medium=invitation&utm_campaign=theatre2026
+
+4. Test Everything
+   - Send test email to yourself
+   - Click the link
+   - Check GA4 Real-time Events
+   - Verify user_id and events appear
+   - Verify language changes are tracked
+
+=== EMAIL TEMPLATE EXAMPLE ===
+
+<a href="https://casamiga.github.io/THEATRE-FESTIVAL-2026/?ref=user@example.com&utm_source=email&utm_medium=invitation&utm_campaign=theatre2026">
+  VER DETALLES DEL FESTIVAL
+</a>
+
+=== KEY METRICS TO MONITOR ===
+
+- Email Sent: Count of emails dispatched
+- Email Opened: Pixel loads (if supported by email client)
+- Email Clicked: User clicks CTA link
+- Page View: User lands on landing page
+- Language Selection: Which language users choose
+- Scroll Depth: How far users scroll through presentation
+- Time on Page: User engagement duration
+- Session Duration: Total time from arrival to departure
+
+=== GA4 DASHBOARD SETUP ===
+
+Create reports for:
+1. Traffic source = "email"
+2. User acquisition by utm_source
+3. Engagement metrics by language
+4. Conversion funnel: Email -> Page View -> 50% Scroll
+5. Session duration by traffic source
+
+=== TROUBLESHOOTING ===
+
+Events not showing up?
+- Check GA4 ID is correct (G-XXXXXXXXXX format)
+- Wait 5-10 minutes for data to appear in GA4
+- Check real-time events tab in GA4
+- Verify browser allows JavaScript
+
+User ID not appearing?
+- Check 'ref' parameter in URL
+- Verify User-ID feature is enabled in GA4
+- Look at GA4 > Admin > Data Streams
+
+Language tracking not working?
+- Check localStorage is enabled in browser
+- Verify gtag() function is defined
+- Check console for JavaScript errors
+
+=== FILES ===
+
+- index.html: Main presentation (1063 lines)
+- EMAIL_TRACKING_GUIDE.md: Complete documentation
+- TRACKING_QUICK_START.txt: This file
+
+=== NEXT STEPS ===
+
+1. Replace GA4 ID in index.html (line 980)
+2. Enable User-ID in GA4
+3. Create email template with tracking pixel and UTM params
+4. Test with sample email
+5. Monitor GA4 dashboard
+6. Send full campaign
+7. Analyze results by language and engagement
+
+=== IMPORTANT NOTES ===
+
+- All data is tied to user_id (email or unique identifier)
+- Campaign can be tracked end-to-end: Email -> Click -> Engagement
+- Multilingual tracking shows language preferences
+- No personal data is stored beyond what's necessary for tracking
+- GA4 automatically handles GDPR consent requirements
+
+For detailed information, see EMAIL_TRACKING_GUIDE.md
+
+Last Updated: 2024
+Project: Teatro Sin Fronteras 2026
