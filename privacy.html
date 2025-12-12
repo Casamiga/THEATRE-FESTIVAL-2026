@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad / Privacy Policy</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #f9f9f9; }
+        .container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h1 { color: #00A8E8; border-bottom: 2px solid #00A8E8; padding-bottom: 10px; }
+        h2 { color: #0369A1; margin-top: 30px; }
+        p, li { font-size: 16px; }
+        .lang-switch { margin-bottom: 20px; text-align: right; }
+        .lang-btn { background: none; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        .lang-btn.active { background: #00A8E8; color: white; border-color: #00A8E8; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="showLang('es')">Español</button>
+        <button class="lang-btn" onclick="showLang('en')">English</button>
+    </div>
+
+    <div id="es-content">
+        <h1>Política de Privacidad</h1>
+        <p><em>Última actualización: Noviembre 2024</em></p>
+
+        <h2>1. Responsable del Tratamiento</h2>
+        <p>El responsable del tratamiento de sus datos es: <strong>Asociación CASAMIGA</strong> (organizadores del festival "Teatro Sin Fronteras").<br>
+        Contacto: info@casamiga.eu</p>
+
+        <h2>2. Qué datos recopilamos</h2>
+        <p>En este sitio web recopilamos datos de dos formas:</p>
+        <ul>
+            <li><strong>Datos técnicos (Cookies):</strong> Información anónima sobre su dispositivo, navegador y comportamiento en el sitio (qué diapositivas ha visto, cuánto tiempo ha permanecido). Utilizamos Google Analytics 4 para este fin.</li>
+            <li><strong>Identificadores de campaña:</strong> Si ha llegado a este sitio a través de un enlace personalizado enviado por correo electrónico, procesamos un identificador único (User ID) para entender la efectividad de nuestra comunicación.</li>
+        </ul>
+
+        <h2>3. Finalidad del tratamiento</h2>
+        <p>Utilizamos estos datos exclusivamente para:</p>
+        <ul>
+            <li>Analizar el interés en el festival.</li>
+            <li>Mejorar la presentación y el contenido del sitio web.</li>
+            <li>Gestionar la comunicación con las escuelas de teatro invitadas.</li>
+        </ul>
+
+        <h2>4. Base legal</h2>
+        <p>El tratamiento de sus datos se basa en su <strong>consentimiento</strong>. Usted tiene derecho a aceptar o rechazar las cookies al entrar en el sitio. Si rechaza las cookies, Google Analytics no se activará.</p>
+
+        <h2>5. Sus derechos</h2>
+        <p>De acuerdo con el RGPD (GDPR), usted tiene derecho a acceder, rectificar y suprimir sus datos. Para ejercer estos derechos, contáctenos en el email indicado arriba.</p>
+        
+        <p><a href="https://casamiga.github.io/THEATRE-FESTIVAL-2026/" style="color: #00A8E8; font-weight: bold;">&larr; Volver a la presentación</a></p>
+    </div>
+
+    <div id="en-content" class="hidden">
+        <h1>Privacy Policy</h1>
+        <p><em>Last updated: November 2024</em></p>
+
+        <h2>1. Data Controller</h2>
+        <p>The data controller is: <strong>Asociación CASAMIGA</strong> (organizers of the "Theater Without Borders" festival).<br>
+        Contact: info@casamiga.eu</p>
+
+        <h2>2. What Data We Collect</h2>
+        <p>We collect data on this website in two ways:</p>
+        <ul>
+            <li><strong>Technical Data (Cookies):</strong> Anonymous information about your device, browser, and behavior on the site (which slides you viewed, time spent). We use Google Analytics 4 for this purpose.</li>
+            <li><strong>Campaign Identifiers:</strong> If you arrived at this site via a personalized link sent by email, we process a unique identifier (User ID) to understand the effectiveness of our communication.</li>
+        </ul>
+
+        <h2>3. Purpose of Processing</h2>
+        <p>We use this data exclusively to:</p>
+        <ul>
+            <li>Analyze interest in the festival.</li>
+            <li>Improve the website presentation and content.</li>
+            <li>Manage communication with invited theater schools.</li>
+        </ul>
+
+        <h2>4. Legal Basis</h2>
+        <p>The processing of your data is based on your <strong>consent</strong>. You have the right to accept or decline cookies upon entering the site. If you decline cookies, Google Analytics will not be activated.</p>
+
+        <h2>5. Your Rights</h2>
+        <p>Under the GDPR, you have the right to access, rectify, and delete your data. To exercise these rights, please contact us at the email address above.</p>
+
+        <p><a href="https://casamiga.github.io/THEATRE-FESTIVAL-2026/" style="color: #00A8E8; font-weight: bold;">&larr; Back to presentation</a></p>
+    </div>
+</div>
+
+<script>
+    function showLang(lang) {
+        document.getElementById('es-content').classList.add('hidden');
+        document.getElementById('en-content').classList.add('hidden');
+        document.getElementById(lang + '-content').classList.remove('hidden');
+        
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
