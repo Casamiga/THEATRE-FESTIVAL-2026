@@ -8,7 +8,7 @@
 
     <script>
         // Получаем UID из ссылки (например, ?uid=user_123)
-        // Объявляем это ОДИН раз здесь, чтобы избежать конфликтов
+        // Объявляем это ОДИН раз здесь
         const urlParams = new URLSearchParams(window.location.search);
         window.userId = urlParams.get('uid'); 
 
@@ -75,7 +75,7 @@
             box-shadow: 0 4px 25px rgba(0,0,0,0.25);
             padding: 20px;
             z-index: 9999;
-            display: none; /* Скрыт по умолчанию, JS покажет */
+            display: none; /* Скрыт по умолчанию */
             flex-direction: column;
             border-radius: 12px;
             border-left: 6px solid #00A8E8;
@@ -103,7 +103,7 @@
             .cookie-banner {
                 left: 50%;
                 transform: translateX(-50%);
-                bottom: 80px; /* Выше кнопок навигации */
+                bottom: 80px; 
                 width: 90%;
             }
         }
@@ -550,6 +550,10 @@
 <script>
     let currentSlide = 1;
     const totalSlides = 11;
+
+    // GA Variables
+    // Не объявляем здесь const urlParams, так как они уже объявлены в head
+    // Используем window.userId, который мы сохранили ранее
 
     // TRANSLATIONS
     const translations = {
@@ -1197,13 +1201,13 @@
         
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
+            if (translations[lang][key]) {
                 element.textContent = translations[lang][key];
             }
         });
 
         // Update WhatsApp and Telegram links dynamically
-        const msg = (translations[lang] && translations[lang].link_message) ? translations[lang].link_message : translations['es'].link_message;
+        const msg = translations[lang].link_message || translations['es'].link_message;
         const encodedMsg = encodeURIComponent(msg);
         
         const whatsappLink = document.getElementById('whatsapp-link');
@@ -1398,8 +1402,15 @@
         setLanguage(langToUse);
         showSlide(currentSlide);
         checkCookieConsent(); // Check cookies on load
+
+        // === ОЧИСТКА URL (Убираем хвосты UTM и UID) ===
+        if (window.location.search.length > 0) {
+            setTimeout(function() {
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }, 100); 
+        }
     });
 </script>
 </body>
 </html>
-
