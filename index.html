@@ -75,7 +75,7 @@
             box-shadow: 0 4px 25px rgba(0,0,0,0.25);
             padding: 20px;
             z-index: 9999;
-            display: none; /* Скрыт по умолчанию */
+            display: none; /* Скрыт по умолчанию, JS покажет */
             flex-direction: column;
             border-radius: 12px;
             border-left: 6px solid #00A8E8;
@@ -1199,6 +1199,11 @@
             localStorage.setItem('selectedLanguage', lang);
         }
         
+        // Update Document Title
+        if (translations[lang] && translations[lang].slide1_titulo) {
+             document.title = translations[lang].slide1_titulo + " 2026";
+        }
+
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translations[lang][key]) {
