@@ -946,6 +946,7 @@ function showSlide(n) {
 }
 
 function nextSlide() {
+          console.log('nextSlide called, currentSlide:', currentSlide, 'totalSlides:', totalSlides);
     if (currentSlide < totalSlides) {
         currentSlide++;
         showSlide(currentSlide);
@@ -1076,6 +1077,7 @@ window.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 
 
