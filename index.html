@@ -163,8 +163,21 @@
         .slide-with-image.text-right { flex-direction: row-reverse; }
         
         .slide-content { flex: 1; padding: 4vh 5vw; display: flex; flex-direction: column; justify-content: center; background: white; overflow-y: auto; height: 100vh; }
-        .slide-image-half { flex: 1; height: 100vh; width: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
-        .slide-image-half.empty { background: linear-gradient(135deg, #E0F2FE 0%, #BEE3F8 100%); color: #0369A1; }
+        
+        .slide-image-half { 
+            flex: 1; 
+            height: 100vh; 
+            width: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative;
+            /* FIX 2: Default scaling behavior for Desktop */
+            background-color: #E0F2FE;
+            background-size: contain; 
+            background-repeat: no-repeat;
+            background-position: center;
+        }
 
         /* --- OTHER SLIDES --- */
         .slide-9 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; align-items: center; justify-content: center; padding: 60px 80px; }
@@ -238,15 +251,15 @@
             .cookie-banner { left: 50%; transform: translateX(-50%); bottom: 140px; width: 90%; }
 
             /* === THE FIX: SAFE ZONES & SCROLLING === */
-            /* We force specific padding on the slide so content 
-               starts below top UI and ends above bottom UI.
+            /* FIX 1: Increase padding-bottom to 220px to ensure image 
+               rises above the buttons when scrolled to the end.
             */
             .slide {
-                padding: 90px 20px 160px 20px !important; /* Top Safe 90px, Bottom Safe 160px */
+                padding: 90px 20px 220px 20px !important; 
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start; /* Start content at top */
-                overflow-y: auto; /* Scroll within these bounds */
+                justify-content: flex-start; 
+                overflow-y: auto; 
                 height: 100%;
             }
 
@@ -258,13 +271,13 @@
                 order: 1; /* Text First */
                 padding: 0 0 20px 0; 
                 text-align: center; 
-                flex: 0 0 auto; /* Let text take needed height */
+                flex: 0 0 auto; 
             }
             .slide-1-center h1 { font-size: 36px; }
             
             .slide-1-right { 
                 order: 2; /* Logo Second */
-                flex: 0 0 180px; /* Fixed height space for logo */
+                flex: 0 0 180px; 
                 width: 100%;
                 margin-top: 20px;
                 display: flex;
@@ -283,17 +296,19 @@
                 order: 1; /* Text Top */
                 width: 100%; 
                 height: auto; 
-                padding: 0; /* Padding is handled by .slide container now */
-                flex: 0 0 auto; /* Take natural height */
-                overflow: visible; /* Scroll is handled by parent */
+                padding: 0; 
+                flex: 0 0 auto; 
+                overflow: visible; 
             }
 
             .slide-image-half { 
                 order: 2; /* Image Bottom */
                 width: 100%; 
-                height: 250px; /* Fixed height for image strip */
-                flex: none; 
-                margin-top: 30px; /* Space between text and image */
+                height: 250px; 
+                flex: none; /* Don't squash */
+                margin-top: 30px; 
+                /* Mobile keeps contain behavior to show full image */
+                background-size: contain; 
             }
             
             /* Other Layouts */
@@ -340,23 +355,23 @@
 
 <div class="slide-container active"><div class="slide slide-1"><div class="slide-1-left"><img src="images/stora.png" alt="Cortina" class="curtain-image"></div><div class="slide-1-center"><h1 data-i18n="slide1_titulo">TEATRO SIN FRONTERAS</h1><p class="subtitle" data-i18n="slide1_subtitulo">Uniendo el mundo a través del teatro</p><div class="festival-info"><p style="font-style: italic;" data-i18n="slide1_tipo">Festival Internacional de Teatro Infantil</p><p style="margin-top: 15px;" data-i18n="slide1_fecha">1 de marzo de 2026</p><p data-i18n="slide1_lugar">Teatro Municipal de Lloret de Mar, España</p></div><p class="tagline" data-i18n="slide1_tagline">Vuestro grupo en el escenario internacional de Europa</p></div><div class="slide-1-right"><img src="images/logo_theatr.png" alt="Logo Teatro Sin Fronteras" class="logo-circle"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-2 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide2_titulo">Sobre el Festival</h2><div class="description-box"><p data-i18n="slide2_descripcion">Una celebración internacional del teatro que reúne a niños y adolescentes de 6–18 años de diferentes países y culturas</p></div><div class="stats-list"><p><strong>2025:</strong> <span data-i18n="slide2_2025">Primer Festival: 10 grupos, 5 idiomas, 400 espectadores, 8 categorías</span></p><p><strong>2026:</strong> <span data-i18n="slide2_2026">Se esperan 6 países y 8 idiomas</span></p><p><strong data-i18n="valores">Valores:</strong> <span data-i18n="slide2_valores">Inclusividad, diversidad lingüística, intercambio cultural</span></p></div><div class="instagram-link"><p><span data-i18n="instagram_label">Instagram</span> 👉 <a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank">@teatro_sinfronteras_festival</a></p></div></div><div class="slide-image-half empty" style="background: url('images/slide2.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-2 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide2_titulo">Sobre el Festival</h2><div class="description-box"><p data-i18n="slide2_descripcion">Una celebración internacional del teatro que reúne a niños y adolescentes de 6–18 años de diferentes países y culturas</p></div><div class="stats-list"><p><strong>2025:</strong> <span data-i18n="slide2_2025">Primer Festival: 10 grupos, 5 idiomas, 400 espectadores, 8 categorías</span></p><p><strong>2026:</strong> <span data-i18n="slide2_2026">Se esperan 6 países y 8 idiomas</span></p><p><strong data-i18n="valores">Valores:</strong> <span data-i18n="slide2_valores">Inclusividad, diversidad lingüística, intercambio cultural</span></p></div><div class="instagram-link"><p><span data-i18n="instagram_label">Instagram</span> 👉 <a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank">@teatro_sinfronteras_festival</a></p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide2.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-3 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide3_titulo">¿Por qué participar?</h2><div class="reason-item"><h3 data-i18n="slide3_razon1_titulo">Experiencia internacional:</h3><p data-i18n="slide3_razon1_desc">Un escenario multicultural, público real, sin barreras lingüísticas</p></div><div class="reason-item"><h3 data-i18n="slide3_razon2_titulo">Prestigio para vuestro centro:</h3><p data-i18n="slide3_razon2_desc">Actuar en un festival internacional de prestigio</p></div><div class="reason-item"><h3 data-i18n="slide3_razon3_titulo">Intercambio cultural:</h3><p data-i18n="slide3_razon3_desc">Encuentros con grupos de 6 países europeos</p></div><div class="reason-item"><h3 data-i18n="slide3_razon4_titulo">Atmósfera de apoyo:</h3><p data-i18n="slide3_razon4_desc">Un festival de colaboración, no de competencia</p></div><div class="reason-item"><h3 data-i18n="slide3_razon5_titulo">Reconocimientos:</h3><p data-i18n="slide3_razon5_desc">Estatuillas, diplomas, certificados internacionales y un Gran Premio con dotación económica</p></div><p class="motto" data-i18n="slide3_lema">El arte borra fronteras</p></div><div class="slide-image-half empty" style="background: url('images/slide3.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-3 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide3_titulo">¿Por qué participar?</h2><div class="reason-item"><h3 data-i18n="slide3_razon1_titulo">Experiencia internacional:</h3><p data-i18n="slide3_razon1_desc">Un escenario multicultural, público real, sin barreras lingüísticas</p></div><div class="reason-item"><h3 data-i18n="slide3_razon2_titulo">Prestigio para vuestro centro:</h3><p data-i18n="slide3_razon2_desc">Actuar en un festival internacional de prestigio</p></div><div class="reason-item"><h3 data-i18n="slide3_razon3_titulo">Intercambio cultural:</h3><p data-i18n="slide3_razon3_desc">Encuentros con grupos de 6 países europeos</p></div><div class="reason-item"><h3 data-i18n="slide3_razon4_titulo">Atmósfera de apoyo:</h3><p data-i18n="slide3_razon4_desc">Un festival de colaboración, no de competencia</p></div><div class="reason-item"><h3 data-i18n="slide3_razon5_titulo">Reconocimientos:</h3><p data-i18n="slide3_razon5_desc">Estatuillas, diplomas, certificados internacionales y un Gran Premio con dotación económica</p></div><p class="motto" data-i18n="slide3_lema">El arte borra fronteras</p></div><div class="slide-image-half empty" style="background-image: url('images/slide3.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-4 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide4_titulo">Novedades 2026</h2><div class="news-item"><h3 data-i18n="slide4_noticia1_titulo">Por edades:</h3><p data-i18n="slide4_noticia1_desc">10:00–14:00 (6–11 años) y 16:00–20:00 (12–18 años)</p></div><div class="news-item"><h3 data-i18n="slide4_noticia2_titulo">Jurado:</h3><p data-i18n="slide4_noticia2_desc">Actores profesionales, directores, pedagogos y expertos teatrales</p></div><div class="news-item"><h3 data-i18n="slide4_noticia3_titulo">Nuevos premios:</h3><p data-i18n="slide4_noticia3_desc">Reconocimientos para diferentes géneros teatrales</p></div><div class="news-item"><h3 data-i18n="slide4_noticia4_titulo">Cobertura mediática:</h3><p data-i18n="slide4_noticia4_desc">TV local y prensa de la región</p></div><div class="news-item"><h3 data-i18n="slide4_noticia5_titulo">Entrada gratuita:</h3><p data-i18n="slide4_noticia5_desc">Aforo completo para cada actuación</p></div></div><div class="slide-image-half empty" style="background: url('images/slide4.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-4 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide4_titulo">Novedades 2026</h2><div class="news-item"><h3 data-i18n="slide4_noticia1_titulo">Por edades:</h3><p data-i18n="slide4_noticia1_desc">10:00–14:00 (6–11 años) y 16:00–20:00 (12–18 años)</p></div><div class="news-item"><h3 data-i18n="slide4_noticia2_titulo">Jurado:</h3><p data-i18n="slide4_noticia2_desc">Actores profesionales, directores, pedagogos y expertos teatrales</p></div><div class="news-item"><h3 data-i18n="slide4_noticia3_titulo">Nuevos premios:</h3><p data-i18n="slide4_noticia3_desc">Reconocimientos para diferentes géneros teatrales</p></div><div class="news-item"><h3 data-i18n="slide4_noticia4_titulo">Cobertura mediática:</h3><p data-i18n="slide4_noticia4_desc">TV local y prensa de la región</p></div><div class="news-item"><h3 data-i18n="slide4_noticia5_titulo">Entrada gratuita:</h3><p data-i18n="slide4_noticia5_desc">Aforo completo para cada actuación</p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide4.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-5 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide5_titulo">Formato de participación</h2><div class="format-section"><h3 data-i18n="slide5_formato1_titulo">El espectáculo</h3><ul><li data-i18n="slide5_formato1_item1">Duración: 10–15 minutos</li><li data-i18n="slide5_formato1_item2">Montaje: hasta 10 minutos</li><li data-i18n="slide5_formato1_item3">Descripción de la obra (breve)</li><li data-i18n="slide5_formato1_item4">Cualquier idioma es bienvenido</li></ul></div><div class="format-section"><h3 data-i18n="slide5_formato2_titulo">Retroalimentación</h3><ul><li data-i18n="slide5_formato2_item1">Profesionales del teatro ofrecen comentarios cálidos y recomendaciones constructivas a cada grupo</li></ul></div></div><div class="slide-image-half empty" style="background: url('images/slide5.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-5 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide5_titulo">Formato de participación</h2><div class="format-section"><h3 data-i18n="slide5_formato1_titulo">El espectáculo</h3><ul><li data-i18n="slide5_formato1_item1">Duración: 10–15 minutos</li><li data-i18n="slide5_formato1_item2">Montaje: hasta 10 minutos</li><li data-i18n="slide5_formato1_item3">Descripción de la obra (breve)</li><li data-i18n="slide5_formato1_item4">Cualquier idioma es bienvenido</li></ul></div><div class="format-section"><h3 data-i18n="slide5_formato2_titulo">Retroalimentación</h3><ul><li data-i18n="slide5_formato2_item1">Profesionales del teatro ofrecen comentarios cálidos y recomendaciones constructivas a cada grupo</li></ul></div></div><div class="slide-image-half empty" style="background-image: url('images/slide5.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-6 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide6_titulo">Premios y reconocimiento</h2><div class="awards-grid"><div class="award-box"><h3 data-i18n="slide6_premio1_titulo">Para el grupo</h3><p data-i18n="slide6_premio1_desc">Un Gran Premio con dotación económica + Estatuilla del festival</p></div><div class="award-box"><h3 data-i18n="slide6_premio2_titulo">Para los participantes</h3><p data-i18n="slide6_premio2_desc">Diplomas</p></div><div class="award-box"><h3 data-i18n="slide6_premio3_titulo">Adicional</h3><p data-i18n="slide6_premio3_desc">Premios especiales</p></div></div></div><div class="slide-image-half empty" style="background: url('images/slide6.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-6 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide6_titulo">Premios y reconocimiento</h2><div class="awards-grid"><div class="award-box"><h3 data-i18n="slide6_premio1_titulo">Para el grupo</h3><p data-i18n="slide6_premio1_desc">Un Gran Premio con dotación económica + Estatuilla del festival</p></div><div class="award-box"><h3 data-i18n="slide6_premio2_titulo">Para los participantes</h3><p data-i18n="slide6_premio2_desc">Diplomas</p></div><div class="award-box"><h3 data-i18n="slide6_premio3_titulo">Adicional</h3><p data-i18n="slide6_premio3_desc">Premios especiales</p></div></div></div><div class="slide-image-half empty" style="background-image: url('images/slide6.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-7 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide7_titulo">Condiciones y aportación</h2><div class="conditions-box"><p><strong data-i18n="condicion_edad">Edad:</strong> <span data-i18n="slide7_edad">6–18 años</span></p><p><strong data-i18n="condicion_repertorio">Repertorio:</strong> <span data-i18n="slide7_repertorio">Sin restricciones</span></p><p><strong data-i18n="condicion_garantia">Participación garantizada:</strong> <span data-i18n="slide7_garantia">Todos los grupos que abonan la cuota obtienen un espacio escénico</span></p></div><div class="pricing-section"><h3 data-i18n="slide7_aportacion_titulo">Aportación organizativa</h3><p><strong data-i18n="slide7_precio1">45 €</strong> <span data-i18n="slide7_precio1_desc">por participante</span></p><p><strong data-i18n="slide7_precio2">450 €</strong> <span data-i18n="slide7_precio2_desc">para grupos de 10+ participantes</span></p></div></div><div class="slide-image-half empty" style="background: url('images/slide7.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-7 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide7_titulo">Condiciones y aportación</h2><div class="conditions-box"><p><strong data-i18n="condicion_edad">Edad:</strong> <span data-i18n="slide7_edad">6–18 años</span></p><p><strong data-i18n="condicion_repertorio">Repertorio:</strong> <span data-i18n="slide7_repertorio">Sin restricciones</span></p><p><strong data-i18n="condicion_garantia">Participación garantizada:</strong> <span data-i18n="slide7_garantia">Todos los grupos que abonan la cuota obtienen un espacio escénico</span></p></div><div class="pricing-section"><h3 data-i18n="slide7_aportacion_titulo">Aportación organizativa</h3><p><strong data-i18n="slide7_precio1">45 €</strong> <span data-i18n="slide7_precio1_desc">por participante</span></p><p><strong data-i18n="slide7_precio2">450 €</strong> <span data-i18n="slide7_precio2_desc">para grupos de 10+ participantes</span></p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide7.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-8 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide8_titulo">Voces del Festival 2025</h2><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio1_autor">Nikita, Participante (13 años):</p><p class="testimonial-text" data-i18n="slide8_testimonio1_texto">«El idioma no importa. En el escenario todos nos entendemos».</p></div><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio2_autor">Sr. Frederic Guix, Concejal de Cultura:</p><p class="testimonial-text" data-i18n="slide8_testimonio2_texto">«Valentía y sinceridad. Son los primeros pasos de los niños en el gran mundo del teatro».</p></div><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio3_autor">Sr. Adrià Lamelas Martínez, El alcalde de Lloret de Mar:</p><p class="testimonial-text" data-i18n="slide8_testimonio3_texto">«Es un honor recibir a directores y niños de toda Europa. Apoyamos el arte que une».</p></div></div><div class="slide-image-half empty" style="background: url('images/slide8.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-8 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide8_titulo">Voces del Festival 2025</h2><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio1_autor">Nikita, Participante (13 años):</p><p class="testimonial-text" data-i18n="slide8_testimonio1_texto">«El idioma no importa. En el escenario todos nos entendemos».</p></div><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio2_autor">Sr. Frederic Guix, Concejal de Cultura:</p><p class="testimonial-text" data-i18n="slide8_testimonio2_texto">«Valentía y sinceridad. Son los primeros pasos de los niños en el gran mundo del teatro».</p></div><div class="testimonial"><p class="testimonial-author" data-i18n="slide8_testimonio3_autor">Sr. Adrià Lamelas Martínez, El alcalde de Lloret de Mar:</p><p class="testimonial-text" data-i18n="slide8_testimonio3_texto">«Es un honor recibir a directores y niños de toda Europa. Apoyamos el arte que une».</p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide8.jpg');"></div></div></div>
 
 <div class="slide-container"><div class="slide slide-9"><h2 data-i18n="slide9_titulo">Organizadores y apoyo</h2><div class="organizers-grid"><div class="organizer-box"><img src="images/Generalitat.png" alt="Generalitat" class="organizer-logo"><h3 data-i18n="org_generalitat">Generalitat de Cataluña</h3></div><div class="organizer-box"><img src="images/Casamiga.png" alt="Casamiga" class="organizer-logo"><h3 data-i18n="org_casamiga">Asociación Casamiga</h3></div><div class="organizer-box"><img src="images/Teatro.png" alt="Teatro" class="organizer-logo"><h3 data-i18n="org_teatro">Teatro Municipal de Lloret de Mar</h3><p data-i18n="org_teatro_desc">Escenario oficial del festival</p></div><div class="organizer-box"><img src="images/Ayuntamiento.png" alt="Ayuntamiento" class="organizer-logo"><h3 data-i18n="org_ayuntamiento">Ayuntamiento de Lloret de Mar</h3></div></div></div></div>
 
-<div class="slide-container"><div class="slide slide-10 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide10_titulo">¿Todavía lo estás pensando?</h2></div><div class="slide-image-half empty" style="background: url('images/slide10.jpg') center/cover no-repeat #E0F2FE;"></div></div></div>
+<div class="slide-container"><div class="slide slide-10 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide10_titulo">¿Todavía lo estás pensando?</h2></div><div class="slide-image-half empty" style="background-image: url('images/slide10.jpg');"></div></div></div>
 
 <div class="slide-container"><div class="slide slide-11"><h1 data-i18n="slide11_titulo">¡Únete!</h1><p class="tagline" data-i18n="slide11_tagline">Regala a los niños una experiencia que recordarán toda la vida</p><div class="contact-section"><h3 data-i18n="slide11_contacto">Contacta con nosotros</h3><div class="contact-info"><p style="font-size: clamp(20px, 2.5vw, 28px);"><strong data-i18n="org_casamiga_full">Asociación CASAMIGA</strong></p></div><div class="contact-info"><p>📞 <a href="tel:+34698999033">+34 698 999 033</a> (<a id="whatsapp-link" href="#" target="_blank">WhatsApp</a>, <a id="telegram-link" href="#" target="_blank" rel="noopener noreferrer">Telegram</a>)</p></div><div class="contact-info"><p>📧 <a href="mailto:info@casamiga.eu">info@casamiga.eu</a></p></div><div class="contact-info"><p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><circle cx="17.5" cy="6.5" r="1.5"></circle></svg><a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank" rel="noopener noreferrer">@teatro_sinfronteras_festival</a></p></div></div></div></div>
 
