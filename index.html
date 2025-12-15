@@ -78,7 +78,9 @@
         /* ===== STYLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
-        body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+        
+        /* FIX: White background to avoid gray areas */
+        body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #333; line-height: 1.6; }
 
         /* --- DESKTOP NAVIGATION & BUTTONS --- */
         .floating-cta {
@@ -143,7 +145,7 @@
         .slide-container.active { display: block; }
         
         /* Base Slide Style */
-        .slide { width: 100%; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; overflow-y: auto; }
+        .slide { width: 100%; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; overflow-y: auto; background: white; }
 
         /* --- SLIDE 1 (Desktop) --- */
         .slide-1 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; padding: 0 !important; display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; overflow: hidden; }
@@ -217,7 +219,8 @@
         /* ========================================= */
         /* === MOBILE OPTIMIZATION === */
         /* ========================================= */
-        @media (max-width: 768px) {
+        /* I increased the breakpoint to 1024px to cover narrow desktops too */
+        @media (max-width: 1024px) {
             
             /* UI Tweaks */
             .slide-counter { 
@@ -239,11 +242,11 @@
             }
             .floating-cta:hover { transform: translateX(50%); }
 
-            /* FIXED NAV BUTTONS (Transparent) */
+            /* FIX 1: Transparent Nav Buttons */
             .nav-buttons { 
                 bottom: 85px; 
                 width: auto; 
-                background: transparent; /* Changed back to transparent */
+                background: transparent; 
                 backdrop-filter: none;
                 border: none;
                 padding: 5px 10px;
@@ -251,14 +254,15 @@
             .nav-btn { padding: 10px 20px; font-size: 14px; }
             .cookie-banner { left: 50%; transform: translateX(-50%); bottom: 140px; width: 90%; }
 
-            /* === THE FIX: SAFE ZONES & SCROLLING === */
+            /* === SAFE ZONES & SCROLLING === */
             .slide {
-                padding: 90px 20px 220px 20px !important; /* Increased bottom padding to 220px */
+                padding: 90px 20px 220px 20px !important; /* Bottom padding keeps content above buttons */
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start; 
                 overflow-y: auto; 
                 height: 100%;
+                background: white; /* Ensure white background */
             }
 
             /* Slide 1: Text Top, Logo Bottom */
@@ -282,9 +286,8 @@
                 align-items: center;
                 justify-content: center;
             }
-            /* Scalable Logo */
             .logo-circle { 
-                width: 60%; /* Scales with screen width */
+                width: 60%; 
                 max-width: 300px;
                 height: auto;
             }
@@ -304,17 +307,20 @@
                 overflow: visible; 
             }
 
-            /* FIXED IMAGE SCALING FOR MOBILE */
+            /* FIX 2: IMAGE WIDTH EQUALS SCREEN WIDTH */
             .slide-image-half { 
                 order: 2; /* Image Bottom */
                 width: 100%; 
-                height: auto; /* Allow auto height */
-                aspect-ratio: 16/9; /* Force a ratio so it takes space and scales */
+                height: auto; 
+                /* Aspect ratio trick: creates a box that grows with width */
+                aspect-ratio: 16/9; 
                 flex: none; 
                 margin-top: 30px; 
-                background-size: contain; /* Show full image, no cropping */
+                /* Contain ensures we see the full image, Ratio ensures the box is big enough */
+                background-size: contain; 
                 background-position: center;
                 background-repeat: no-repeat;
+                background-color: #E0F2FE; /* Matches background */
             }
             
             /* Other Layouts */
