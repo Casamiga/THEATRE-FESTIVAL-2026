@@ -172,7 +172,7 @@
             align-items: center; 
             justify-content: center; 
             position: relative;
-            /* FIX 2: Default scaling behavior for Desktop */
+            /* DEFAULT SCALING (Desktop): Contain prevents cropping */
             background-color: #E0F2FE;
             background-size: contain; 
             background-repeat: no-repeat;
@@ -239,23 +239,21 @@
             }
             .floating-cta:hover { transform: translateX(50%); }
 
+            /* FIXED NAV BUTTONS (Transparent) */
             .nav-buttons { 
-                bottom: 85px; /* Lift above CTA */
+                bottom: 85px; 
                 width: auto; 
-                background: rgba(255,255,255,0.85); 
-                backdrop-filter: blur(5px);
-                border: 1px solid #00A8E8;
+                background: transparent; /* Changed back to transparent */
+                backdrop-filter: none;
+                border: none;
                 padding: 5px 10px;
             }
             .nav-btn { padding: 10px 20px; font-size: 14px; }
             .cookie-banner { left: 50%; transform: translateX(-50%); bottom: 140px; width: 90%; }
 
             /* === THE FIX: SAFE ZONES & SCROLLING === */
-            /* FIX 1: Increase padding-bottom to 220px to ensure image 
-               rises above the buttons when scrolled to the end.
-            */
             .slide {
-                padding: 90px 20px 220px 20px !important; 
+                padding: 90px 20px 220px 20px !important; /* Increased bottom padding to 220px */
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start; 
@@ -265,7 +263,7 @@
 
             /* Slide 1: Text Top, Logo Bottom */
             .slide-1 { flex-direction: column !important; }
-            .slide-1-left { display: none; } /* Hide curtain */
+            .slide-1-left { display: none; } 
             
             .slide-1-center { 
                 order: 1; /* Text First */
@@ -277,14 +275,19 @@
             
             .slide-1-right { 
                 order: 2; /* Logo Second */
-                flex: 0 0 180px; 
+                flex: 0 0 auto;
                 width: 100%;
                 margin-top: 20px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
-            .logo-circle { max-height: 100%; max-width: 100%; }
+            /* Scalable Logo */
+            .logo-circle { 
+                width: 60%; /* Scales with screen width */
+                max-width: 300px;
+                height: auto;
+            }
 
 
             /* Split Slides: Text Top, Image Bottom */
@@ -301,14 +304,17 @@
                 overflow: visible; 
             }
 
+            /* FIXED IMAGE SCALING FOR MOBILE */
             .slide-image-half { 
                 order: 2; /* Image Bottom */
                 width: 100%; 
-                height: 250px; 
-                flex: none; /* Don't squash */
+                height: auto; /* Allow auto height */
+                aspect-ratio: 16/9; /* Force a ratio so it takes space and scales */
+                flex: none; 
                 margin-top: 30px; 
-                /* Mobile keeps contain behavior to show full image */
-                background-size: contain; 
+                background-size: contain; /* Show full image, no cropping */
+                background-position: center;
+                background-repeat: no-repeat;
             }
             
             /* Other Layouts */
