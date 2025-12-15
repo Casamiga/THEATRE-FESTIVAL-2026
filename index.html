@@ -122,7 +122,7 @@
             background: transparent; 
             padding: 8px 12px; 
             border-radius: 50px; 
-            width: max-content; /* Ensure exact centering */
+            width: max-content; 
         }
         .nav-btn { background: #00A8E8; color: white; border: none; padding: 12px 30px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .nav-btn:hover { background: #0369A1; transform: translateY(-2px); }
@@ -288,15 +288,18 @@
                 height: 100%;
             }
 
-            /* Slide 1: Text Top, Logo Bottom - CENTERED */
+            /* FIX 1: Slide 1 - FORCE CENTER ALIGNMENT */
             .slide-1 { flex-direction: column !important; }
             .slide-1-left { display: none; } 
             
             .slide-1-center { 
                 order: 1; 
                 padding: 0 0 20px 0; 
-                text-align: center; /* Slide 1 remains Centered */
+                /* Overriding desktop flex-start */
+                text-align: center; 
+                align-items: center; /* This centers flex children on cross-axis */
                 flex: 0 0 auto; 
+                width: 100%; /* Full width to allow centering */
             }
             .slide-1-center h1 { font-size: 36px; }
             
@@ -324,7 +327,7 @@
                 flex: 0 0 auto; 
                 overflow: visible; 
                 
-                /* FIX 1: RESTORE LEFT ALIGNMENT FOR CONTENT SLIDES */
+                /* FIX 2: RESTORE LEFT ALIGNMENT for content slides */
                 text-align: left; 
                 align-items: flex-start;
             }
