@@ -21,10 +21,11 @@
     <link rel="icon" type="image/png" href="images/favicon4.png">
 
     <script>
-        // === ЗАХВАТ ДАННЫХ ===
+        // === 1. ЗАХВАТ ДАННЫХ (Passport 2.B) ===
         const urlParams = new URLSearchParams(window.location.search);
         window.userId = urlParams.get('uid'); 
         
+        // Сохраняем UTM метки для передачи в скрипт
         window.trafficData = {
             referrer: document.referrer,
             utm_source: urlParams.get('utm_source'),
@@ -34,16 +35,18 @@
             utm_term: urlParams.get('utm_term')
         };
 
+        // Обработка ошибок (Passport 2.A - ERROR)
         window.onerror = function(message, source, lineno, colno, error) {
             if (typeof logToSheet === 'function') {
                 logToSheet('ERROR', null, `Line: ${lineno} | ${message}`);
             }
         };
 
-        // GA4 Layer
+        // === 2. GA4 LAYER (Passport 1.4) ===
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
 
+        // Consent Mode v2 (Passport 2.C - Hybrid Mode)
         gtag('consent', 'default', {
             'ad_storage': 'denied',
             'ad_user_data': 'denied',
@@ -54,6 +57,7 @@
         gtag('set', 'url_passthrough', true); 
         gtag('set', 'ads_data_redaction', true);
 
+        // Восстановление согласия, если оно уже было дано
         if (localStorage.getItem('cookieConsent') === 'true') {
             gtag('consent', 'update', {
                 'ad_storage': 'granted',
@@ -225,15 +229,15 @@
             background-position: center;
         }
 
-        /* --- OTHER SLIDES (Modified for compact desktop view) --- */
+        /* --- OTHER SLIDES --- */
         .slide-9 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; align-items: center; justify-content: center; padding: 40px 80px; }
         .slide-9 h2 { text-align: center; color: white; margin-bottom: 50px; width: 100%; font-size: clamp(32px, 4vw, 48px); font-weight: bold; }
         
-        /* Adjusted Grid for Desktop to be more compact */
+        /* Desktop Grid */
         .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 1200px; }
         .organizer-box { 
             background: rgba(255, 255, 255, 0.15); 
-            padding: 20px; /* Reduced padding */
+            padding: 20px; 
             border-radius: 8px; 
             text-align: center; 
             border: 2px solid rgba(255, 255, 255, 0.3); 
@@ -242,10 +246,9 @@
             align-items: center; 
             justify-content: center; 
             gap: 20px; 
-            min-height: 200px; /* Reduced height */
+            min-height: 200px; 
         }
         .organizer-logo { height: clamp(90px, 12vw, 140px); width: auto; max-width: 100%; object-fit: contain; }
-        
         .organizer-box h3 { font-size: clamp(18px, 2.2vw, 24px); margin: 0; font-weight: bold; color: white; }
         .organizer-box p { font-size: clamp(14px, 1.5vw, 16px); opacity: 0.9; margin: 0; color: white; }
 
@@ -303,14 +306,13 @@
                 height: 100%;
             }
 
-            /* FIX 1: Slide 1 - FORCE CENTER ALIGNMENT */
+            /* Slide 1: FORCE CENTER ALIGNMENT */
             .slide-1 { flex-direction: column !important; }
             .slide-1-left { display: none; } 
             
             .slide-1-center { 
                 order: 1; 
                 padding: 0 0 20px 0; 
-                /* Overriding desktop flex-start */
                 text-align: center; 
                 align-items: center; 
                 flex: 0 0 auto; 
@@ -329,7 +331,7 @@
             }
             .logo-circle { width: 60%; max-width: 300px; height: auto; }
 
-            /* Split Slides (2-8): Text Top, Image Bottom */
+            /* Split Slides (2-8): Text Top (Left Aligned), Image Bottom */
             .slide-with-image, .slide-with-image.text-left, .slide-with-image.text-right {
                 flex-direction: column !important;
             }
@@ -341,8 +343,6 @@
                 padding: 0; 
                 flex: 0 0 auto; 
                 overflow: visible; 
-                
-                /* FIX 2: RESTORE LEFT ALIGNMENT for content slides */
                 text-align: left; 
                 align-items: flex-start;
             }
@@ -406,7 +406,7 @@
 
 <div class="slide-container active"><div class="slide slide-1"><div class="slide-1-left"><img src="images/stora.png" alt="Cortina" class="curtain-image"></div><div class="slide-1-center"><h1 data-i18n="slide1_titulo">TEATRO SIN FRONTERAS</h1><p class="subtitle" data-i18n="slide1_subtitulo">Uniendo el mundo a través del teatro</p><div class="festival-info"><p style="font-style: italic;" data-i18n="slide1_tipo">Festival Internacional de Teatro Infantil</p><p style="margin-top: 15px;" data-i18n="slide1_fecha">1 de marzo de 2026</p><p data-i18n="slide1_lugar">Teatro Municipal de Lloret de Mar, España</p></div><p class="tagline" data-i18n="slide1_tagline">Vuestro grupo en el escenario internacional de Europa</p></div><div class="slide-1-right"><img src="images/logo_theatr.png" alt="Logo Teatro Sin Fronteras" class="logo-circle"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-2 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide2_titulo">Sobre el Festival</h2><div class="description-box"><p data-i18n="slide2_descripcion">Una celebración internacional del teatro que reúne a niños y adolescentes de 6–18 años de diferentes países y culturas</p></div><div class="stats-list"><p><strong>2025:</strong> <span data-i18n="slide2_2025">Primer Festival: 10 grupos, 5 idiomas, 400 espectadores, 8 categorías</span></p><p><strong>2026:</strong> <span data-i18n="slide2_2026">Se esperan 6 países y 8 idiomas</span></p><p><strong data-i18n="valores">Valores:</strong> <span data-i18n="slide2_valores">Inclusividad, diversidad lingüística, intercambio cultural</span></p></div><div class="instagram-link"><p><span data-i18n="instagram_label">Instagram</span> 👉 <a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank">@teatro_sinfronteras_festival</a></p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide2.jpg');"></div></div></div>
+<div class="slide-container"><div class="slide slide-2 slide-with-image text-left"><div class="slide-content"><h2 data-i18n="slide2_titulo">Sobre el Festival</h2><div class="description-box"><p data-i18n="slide2_descripcion">Una celebración internacional del teatro que reúne a niños y adolescentes de 6–18 años de diferentes países y culturas</p></div><div class="stats-list"><p><strong>2025:</strong> <span data-i18n="slide2_2025">Primer Festival: 10 grupos, 5 idiomas, 400 espectadores, 8 categorías</span></p><p><strong>2026:</strong> <span data-i18n="slide2_2026">Se esperan 6 países y 8 idiomas</span></p><p><strong data-i18n="valores">Valores:</strong> <span data-i18n="slide2_valores">Inclusividad, diversidad lingüística, intercambio cultural</span></p></div><div class="instagram-link"><p><span data-i18n="instagram_label">Instagram</span> 👉 <a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank" onclick="logToSheet('CONTACT_CLICK', 2, 'Instagram Link')">@teatro_sinfronteras_festival</a></p></div></div><div class="slide-image-half empty" style="background-image: url('images/slide2.jpg');"></div></div></div>
 
 <div class="slide-container"><div class="slide slide-3 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide3_titulo">¿Por qué participar?</h2><div class="reason-item"><h3 data-i18n="slide3_razon1_titulo">Experiencia internacional:</h3><p data-i18n="slide3_razon1_desc">Un escenario multicultural, público real, sin barreras lingüísticas</p></div><div class="reason-item"><h3 data-i18n="slide3_razon2_titulo">Prestigio para vuestro centro:</h3><p data-i18n="slide3_razon2_desc">Actuar en un festival internacional de prestigio</p></div><div class="reason-item"><h3 data-i18n="slide3_razon3_titulo">Intercambio cultural:</h3><p data-i18n="slide3_razon3_desc">Encuentros con grupos de 6 países europeos</p></div><div class="reason-item"><h3 data-i18n="slide3_razon4_titulo">Atmósfera de apoyo:</h3><p data-i18n="slide3_razon4_desc">Un festival de colaboración, no de competencia</p></div><div class="reason-item"><h3 data-i18n="slide3_razon5_titulo">Reconocimientos:</h3><p data-i18n="slide3_razon5_desc">Estatuillas, diplomas, certificados internacionales y un Gran Premio con dotación económica</p></div><p class="motto" data-i18n="slide3_lema">El arte borra fronteras</p></div><div class="slide-image-half empty" style="background-image: url('images/slide3.jpg');"></div></div></div>
 
@@ -424,7 +424,7 @@
 
 <div class="slide-container"><div class="slide slide-10 slide-with-image text-right"><div class="slide-content"><h2 data-i18n="slide10_titulo">¿Todavía lo estás pensando?</h2></div><div class="slide-image-half empty" style="background-image: url('images/slide10.jpg');"></div></div></div>
 
-<div class="slide-container"><div class="slide slide-11"><h1 data-i18n="slide11_titulo">¡Únete!</h1><p class="tagline" data-i18n="slide11_tagline">Regala a los niños una experiencia que recordarán toda la vida</p><div class="contact-section"><h3 data-i18n="slide11_contacto">Contacta con nosotros</h3><div class="contact-info"><p style="font-size: clamp(20px, 2.5vw, 28px);"><strong data-i18n="org_casamiga_full">Asociación CASAMIGA</strong></p></div><div class="contact-info"><p>📞 <a href="tel:+34698999033">+34 698 999 033</a> (<a id="whatsapp-link" href="#" target="_blank">WhatsApp</a>, <a id="telegram-link" href="#" target="_blank" rel="noopener noreferrer">Telegram</a>)</p></div><div class="contact-info"><p>📧 <a href="mailto:info@casamiga.eu">info@casamiga.eu</a></p></div><div class="contact-info"><p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><circle cx="17.5" cy="6.5" r="1.5"></circle></svg><a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank" rel="noopener noreferrer">@teatro_sinfronteras_festival</a></p></div></div></div></div>
+<div class="slide-container"><div class="slide slide-11"><h1 data-i18n="slide11_titulo">¡Únete!</h1><p class="tagline" data-i18n="slide11_tagline">Regala a los niños una experiencia que recordarán toda la vida</p><div class="contact-section"><h3 data-i18n="slide11_contacto">Contacta con nosotros</h3><div class="contact-info"><p style="font-size: clamp(20px, 2.5vw, 28px);"><strong data-i18n="org_casamiga_full">Asociación CASAMIGA</strong></p></div><div class="contact-info"><p>📞 <a href="tel:+34698999033" onclick="logToSheet('CONTACT_CLICK', 11, 'Phone Call')">+34 698 999 033</a> (<a id="whatsapp-link" href="#" target="_blank" onclick="logToSheet('CONTACT_CLICK', 11, 'WhatsApp')">WhatsApp</a>, <a id="telegram-link" href="#" target="_blank" rel="noopener noreferrer" onclick="logToSheet('CONTACT_CLICK', 11, 'Telegram')">Telegram</a>)</p></div><div class="contact-info"><p>📧 <a href="mailto:info@casamiga.eu" onclick="logToSheet('CONTACT_CLICK', 11, 'Email')">info@casamiga.eu</a></p></div><div class="contact-info"><p><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><circle cx="17.5" cy="6.5" r="1.5"></circle></svg><a href="https://www.instagram.com/teatro_sinfronteras_festival" target="_blank" rel="noopener noreferrer" onclick="logToSheet('CONTACT_CLICK', 11, 'Instagram Bottom')">@teatro_sinfronteras_festival</a></p></div></div></div></div>
 
 <div class="nav-buttons">
     <button class="nav-btn" id="prev-btn" onclick="previousSlide()"><span data-i18n="btn_anterior">← Anterior</span></button>
@@ -1115,7 +1115,7 @@
         }
     };
 
-    // === FINGERPRINTING FUNCTION ===
+    // === FINGERPRINTING FUNCTION (Passport 2.A - for UID) ===
     async function generateFingerprint() {
         const str = navigator.userAgent + 
                     navigator.language + 
@@ -1130,7 +1130,7 @@
         return (hash >>> 0).toString(16);
     }
 
-    // === IP TRACKING ===
+    // === IP TRACKING (Passport 2.A - SESSION_START) ===
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
@@ -1142,8 +1142,9 @@
             logToSheet('SESSION_START', null, 'Visitor arrived (No IP)');
         });
 
-    // === LOGGER FUNCTION ===
+    // === LOGGER FUNCTION (Core Backend Interface) ===
     function logToSheet(action, slideNum, details) {
+        // Prevent calls if URL is not set (failsafe)
         if (!WEBHOOK_URL.includes('script.google.com')) return; 
 
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
@@ -1188,10 +1189,12 @@
             localStorage.setItem('selectedLanguage', lang);
         }
         
+        // Update Page Title
         if (translations[lang] && translations[lang].slide1_titulo) {
              document.title = translations[lang].slide1_titulo + " 2026";
         }
 
+        // Update Text Content
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translations[lang] && translations[lang][key]) {
@@ -1199,15 +1202,21 @@
             }
         });
         
+        // Update CTA Button & Form Link (Passport 3 - Hidden Fields)
         const ctaButton = document.querySelector('.floating-cta');
         if (ctaButton && translations[lang] && translations[lang].form_config) {
             const config = translations[lang].form_config;
+            // Use existing UID or fallback to fingerprint/unknown
             const trackingId = window.userId || visitorFingerprint || 'unknown';
+            
+            // Build Google Form URL with pre-filled ID
             const separator = config.url.includes('?') ? '&' : '?';
             const finalUrl = `${config.url}${separator}${config.entry_id}=${trackingId}`;
+            
             ctaButton.href = finalUrl;
         }
         
+        // Update Social Links (WhatsApp/Telegram)
         const msg = (translations[lang] && translations[lang].link_message) ? translations[lang].link_message : translations['es'].link_message;
         const encodedMsg = encodeURIComponent(msg);
         const whatsappLink = document.getElementById('whatsapp-link');
@@ -1215,10 +1224,12 @@
         if (whatsappLink) whatsappLink.href = `https://wa.me/34698999033?text=${encodedMsg}`;
         if (telegramLink) telegramLink.href = `https://t.me/+34698999033?text=${encodedMsg}`;
         
+        // GA4 Language Event
         if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
             gtag('event', 'language_change', { 'event_label': lang });
         }
         
+        // Internal Log
         logToSheet('LANG_CHANGE', null, lang);
     }
 
@@ -1237,10 +1248,12 @@
         const activeContainer = containers[currentSlide - 1];
         if (activeContainer) activeContainer.scrollTop = 0;
         
+        // GA4 Slide Event
         if (localStorage.getItem('cookieConsent') === 'true' && typeof gtag === 'function') {
             gtag('event', 'slide_view', { 'slide_number': currentSlide });
         }
         
+        // Internal Log (Passport 2.A - SLIDE_VIEW)
         logToSheet('SLIDE_VIEW', currentSlide, '');
     }
 
@@ -1261,14 +1274,14 @@
         if (touchEndX - touchStartX > 50) previousSlide();
     }, false);
 
-    // COOKIE LOGIC
+    // === COOKIE LOGIC (Passport 2.C) ===
     function checkCookieConsent() {
         const consent = localStorage.getItem('cookieConsent');
         if (consent === 'true') {
             gtag('consent', 'update', { 'ad_storage': 'granted', 'ad_user_data': 'granted', 'ad_personalization': 'granted', 'analytics_storage': 'granted' });
             enableAnalytics();
         } else if (consent === 'false') {
-            // declined
+            // declined - do nothing for GA4, internal logger still works
         } else {
             document.getElementById('cookie-banner').style.display = 'flex';
         }
@@ -1300,8 +1313,10 @@
 
     // === INITIALIZATION ===
     window.addEventListener('DOMContentLoaded', async function() {
+        // Generate a fingerprint for anonymous tracking (Passport 1.1)
         visitorFingerprint = await generateFingerprint();
 
+        // Preload Images
         const imageUrls = [
             'images/stora.png', 'images/logo_theatr.png',
             'images/slide2.jpg', 'images/slide3.jpg', 'images/slide4.jpg', 
@@ -1311,6 +1326,7 @@
         ];
         imageUrls.forEach((url) => { new Image().src = url; });
 
+        // Language & Slide Logic
         const savedLang = localStorage.getItem('selectedLanguage');
         const urlLang = new URLSearchParams(window.location.search).get('lang');
         const browserLang = navigator.language.split('-')[0];
@@ -1326,6 +1342,7 @@
         showSlide(currentSlide);
         checkCookieConsent();
 
+        // URL Cleanup (Hide UTM/UID for cleaner look)
         if (window.location.search.length > 0) {
             setTimeout(function() {
                 const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -1333,6 +1350,7 @@
             }, 500); 
         }
         
+        // Log Initial Visit (Passport 2.A - VISIT)
         logToSheet('VISIT', 1, 'Page Loaded');
     });
 </script>
