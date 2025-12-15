@@ -79,7 +79,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
         
-        /* FIX: White background to avoid gray areas */
         body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #333; line-height: 1.6; }
 
         /* --- DESKTOP NAVIGATION & BUTTONS --- */
@@ -219,7 +218,6 @@
         /* ========================================= */
         /* === MOBILE OPTIMIZATION === */
         /* ========================================= */
-        /* I increased the breakpoint to 1024px to cover narrow desktops too */
         @media (max-width: 1024px) {
             
             /* UI Tweaks */
@@ -242,7 +240,7 @@
             }
             .floating-cta:hover { transform: translateX(50%); }
 
-            /* FIX 1: Transparent Nav Buttons */
+            /* Transparent Nav Buttons */
             .nav-buttons { 
                 bottom: 85px; 
                 width: auto; 
@@ -256,13 +254,13 @@
 
             /* === SAFE ZONES & SCROLLING === */
             .slide {
-                padding: 90px 20px 220px 20px !important; /* Bottom padding keeps content above buttons */
+                padding: 90px 20px 220px 20px !important; 
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start; 
                 overflow-y: auto; 
                 height: 100%;
-                background: white; /* Ensure white background */
+                /* FIX 1: Removed 'background: white;' here to let gradients show */
             }
 
             /* Slide 1: Text Top, Logo Bottom */
@@ -270,7 +268,7 @@
             .slide-1-left { display: none; } 
             
             .slide-1-center { 
-                order: 1; /* Text First */
+                order: 1; 
                 padding: 0 0 20px 0; 
                 text-align: center; 
                 flex: 0 0 auto; 
@@ -278,7 +276,7 @@
             .slide-1-center h1 { font-size: 36px; }
             
             .slide-1-right { 
-                order: 2; /* Logo Second */
+                order: 2; 
                 flex: 0 0 auto;
                 width: 100%;
                 margin-top: 20px;
@@ -307,20 +305,18 @@
                 overflow: visible; 
             }
 
-            /* FIX 2: IMAGE WIDTH EQUALS SCREEN WIDTH */
+            /* FIX 2: WIDE IMAGES ON MOBILE */
             .slide-image-half { 
                 order: 2; /* Image Bottom */
                 width: 100%; 
-                height: auto; 
-                /* Aspect ratio trick: creates a box that grows with width */
-                aspect-ratio: 16/9; 
+                height: 300px; /* Fixed height for mobile hero view */
                 flex: none; 
                 margin-top: 30px; 
-                /* Contain ensures we see the full image, Ratio ensures the box is big enough */
-                background-size: contain; 
+                /* Cover ensures it fills the width, cropping height if needed */
+                background-size: cover; 
                 background-position: center;
                 background-repeat: no-repeat;
-                background-color: #E0F2FE; /* Matches background */
+                background-color: #E0F2FE; 
             }
             
             /* Other Layouts */
@@ -469,7 +465,7 @@
             slide8_testimonio1_autor: "Nikita, Participante (13 años):",
             slide8_testimonio1_texto: "«El idioma no importa. En el escenario todos nos entendemos».",
             slide8_testimonio2_autor: "Sr. Frederic Guix, Concejal de Cultura:",
-            slide8_testimonio2_texto: "«Valentía y sinceridad. Son los primeros pasos de los niños en el gran mundo del teatro».",
+            slide8_testimonio2_texto: "«Valentía y sinceridad. Son los primeros pasos de los niños en el gran mundo del teatro.»",
             slide8_testimonio3_autor: "Sr. Adrià Lamelas Martínez, El alcalde de Lloret de Mar:",
             slide8_testimonio3_texto: "«Es un honor recibir a directores y niños de toda Europa. Apoyamos el arte que une».",
             slide9_titulo: "Organizadores y apoyo",
@@ -859,7 +855,7 @@
             slide9_titulo: "Organitzadors i suport",
             org_generalitat: "Generalitat de Catalunya",
             org_casamiga: "Associació Casamiga",
-            org_teatro: "Teatre Municipal de Lloret de Mar",
+            org_teatro: "Teatro Municipal de Lloret de Mar",
             org_teatro_desc: "escenari oficial del festival",
             org_ayuntamiento: "Ajuntament de Lloret de Mar",
             slide10_titulo: "Encara hi estàs pensant?",
