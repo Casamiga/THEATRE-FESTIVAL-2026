@@ -225,12 +225,27 @@
             background-position: center;
         }
 
-        /* --- OTHER SLIDES --- */
-        .slide-9 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; align-items: center; justify-content: center; padding: 60px 80px; }
+        /* --- OTHER SLIDES (Modified for compact desktop view) --- */
+        .slide-9 { background: linear-gradient(to right, #0091DA 0%, #00A8E8 100%); color: white; align-items: center; justify-content: center; padding: 40px 80px; }
         .slide-9 h2 { text-align: center; color: white; margin-bottom: 50px; width: 100%; font-size: clamp(32px, 4vw, 48px); font-weight: bold; }
-        .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 100%; max-width: 1200px; }
-        .organizer-box { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 8px; text-align: center; border: 2px solid rgba(255, 255, 255, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; min-height: 250px; }
-        .organizer-logo { height: clamp(120px, 18vw, 180px); width: auto; max-width: 100%; object-fit: contain; }
+        
+        /* Adjusted Grid for Desktop to be more compact */
+        .organizers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 1200px; }
+        .organizer-box { 
+            background: rgba(255, 255, 255, 0.15); 
+            padding: 20px; /* Reduced padding */
+            border-radius: 8px; 
+            text-align: center; 
+            border: 2px solid rgba(255, 255, 255, 0.3); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 20px; 
+            min-height: 200px; /* Reduced height */
+        }
+        .organizer-logo { height: clamp(90px, 12vw, 140px); width: auto; max-width: 100%; object-fit: contain; }
+        
         .organizer-box h3 { font-size: clamp(18px, 2.2vw, 24px); margin: 0; font-weight: bold; color: white; }
         .organizer-box p { font-size: clamp(14px, 1.5vw, 16px); opacity: 0.9; margin: 0; color: white; }
 
@@ -297,9 +312,9 @@
                 padding: 0 0 20px 0; 
                 /* Overriding desktop flex-start */
                 text-align: center; 
-                align-items: center; /* This centers flex children on cross-axis */
+                align-items: center; 
                 flex: 0 0 auto; 
-                width: 100%; /* Full width to allow centering */
+                width: 100%; 
             }
             .slide-1-center h1 { font-size: 36px; }
             
