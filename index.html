@@ -147,7 +147,7 @@
         /* Base Slide Style */
         .slide { width: 100%; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; overflow-y: auto; background: white; }
 
-        /* --- UNIFIED TYPOGRAPHY (Larger & Consistent) --- */
+        /* --- UNIFIED TYPOGRAPHY (Slides 2-8) --- */
         .description-box p, 
         .stats-list, 
         .reason-item p, 
@@ -184,13 +184,12 @@
 
         /* Testimonials Styles */
         .testimonial { margin-bottom: 25px; padding: 20px; background: #E0F2FE; border-left: 5px solid #00A8E8; border-radius: 4px; }
-        /* FIX 2: Style Names like H3 */
         .testimonial-author { 
-            font-size: clamp(18px, 2vw, 22px); /* Same as h3 */
+            font-size: clamp(18px, 2vw, 22px); 
             color: #00A8E8; 
             margin-bottom: 10px; 
             font-weight: bold; 
-            font-style: normal; /* Reset italic */
+            font-style: normal;
         }
 
         /* --- SLIDE 1 (Desktop) --- */
@@ -289,14 +288,14 @@
                 height: 100%;
             }
 
-            /* Slide 1: Text Top, Logo Bottom */
+            /* Slide 1: Text Top, Logo Bottom - CENTERED */
             .slide-1 { flex-direction: column !important; }
             .slide-1-left { display: none; } 
             
             .slide-1-center { 
                 order: 1; 
                 padding: 0 0 20px 0; 
-                text-align: center; 
+                text-align: center; /* Slide 1 remains Centered */
                 flex: 0 0 auto; 
             }
             .slide-1-center h1 { font-size: 36px; }
@@ -312,7 +311,7 @@
             }
             .logo-circle { width: 60%; max-width: 300px; height: auto; }
 
-            /* Split Slides: Text Top, Image Bottom */
+            /* Split Slides (2-8): Text Top, Image Bottom */
             .slide-with-image, .slide-with-image.text-left, .slide-with-image.text-right {
                 flex-direction: column !important;
             }
@@ -324,9 +323,10 @@
                 padding: 0; 
                 flex: 0 0 auto; 
                 overflow: visible; 
-                /* FIX 1: Restore Text Centering on Vertical Layout */
-                text-align: center;
-                align-items: center;
+                
+                /* FIX 1: RESTORE LEFT ALIGNMENT FOR CONTENT SLIDES */
+                text-align: left; 
+                align-items: flex-start;
             }
 
             /* SMART IMAGE HEIGHT SCALING */
@@ -421,9 +421,7 @@
     let userIP = 'Unknown';
     let visitorFingerprint = 'Generating...';
 
-    // ... (Javascript logic remains identical) ...
-    // Copying the full script logic here for completeness as per previous iterations
-
+    // ... (All JS remains identical, copying below) ...
     const translations = {
         es: {
             slide1_titulo: "TEATRO SIN FRONTERAS",
