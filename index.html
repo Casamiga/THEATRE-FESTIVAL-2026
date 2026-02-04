@@ -23,7 +23,19 @@
     <script>
         // === 1. ЗАХВАТ ДАННЫХ (Passport 2.B) ===
         const urlParams = new URLSearchParams(window.location.search);
-        window.userId = urlParams.get('uid'); 
+        const incomingUid = urlParams.get('uid');
+
+        // 1️⃣ Если uid пришёл из email — сохраняем
+        if (incomingUid) {
+            localStorage.setItem('user_uid', incomingUid);
+            window.userId = incomingUid;
+        } else {
+            // 2️⃣ Если uid не пришёл — пробуем восстановить
+            const storedUid = localStorage.getItem('user_uid');
+            if (storedUid) {
+                window.userId = storedUid;
+            }
+        }
         
         // Сохраняем UTM метки для передачи в скрипт
         window.trafficData = {
@@ -432,12 +444,15 @@
 </div>
 
 <script>
+    // ... Версия 4 от 15 дек 2025 г 08:33 Идентификатор развертывания AKfycby4aldzFHdyhnJ5LRdofyF7xhmmDpEPp-xqfWkd85miBgCtcoTCZEwD3VMVuuBW3P87 ...
     let currentSlide = 1;
     const totalSlides = 11;
     const startTime = Date.now();
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby4aldzFHdyhnJ5LRdofyF7xhmmDpEPp-xqfWkd85miBgCtcoTCZEwD3VMVuuBW3P87/exec'; 
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyi1Cwpbi9tkr-FhKoYUjkCPfo-CsvIbHkdot5mhOc6iglriR1RSvNRrLI1b-ZScVSF/exec'; 
     let userIP = 'Unknown';
     let visitorFingerprint = 'Generating...';
+
+
 
     // ... (All JS remains identical, copying below) ...
     const translations = {
@@ -584,7 +599,7 @@
             slide5_formato2_item1: "Theater professionals provide encouraging comments and constructive recommendations to each group",
             slide6_titulo: "Awards & Recognition",
             slide6_premio1_titulo: "For the Group",
-            slide6_premio1_desc: "Grand Prix with a cash prize + Festival Statuette",
+            slide6_premio1_desc: "Grand Prize with a monetary award + Festival Statuette",
             slide6_premio2_titulo: "For Participants",
             slide6_premio2_desc: "Personal Diplomas",
             slide6_premio3_titulo: "Additional",
@@ -1115,13 +1130,34 @@
         }
     };
 
+
+// === начало вствки ANONYMOUS ID (STABLE, GDPR-SAFE) (04-02-2026) ===
+function getAnonymousId() {
+    let anonId = localStorage.getItem('anon_id');
+    if (!anonId) {
+        anonId = crypto.randomUUID();
+        localStorage.setItem('anon_id', anonId);
+    }
+    return anonId;
+}
+// === конец вствки ANONYMOUS ID (STABLE, GDPR-SAFE) (04-02-2026) ===
+
+
     // === FINGERPRINTING FUNCTION (Passport 2.A - for UID) ===
     async function generateFingerprint() {
-        const str = navigator.userAgent + 
-                    navigator.language + 
-                    screen.colorDepth + 
-                    screen.width + 'x' + screen.height + 
-                    Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const parts = [
+            navigator.userAgent,
+            navigator.language,
+            screen.width + 'x' + screen.height,
+            screen.colorDepth,
+            Intl.DateTimeFormat().resolvedOptions().timeZone,
+            navigator.hardwareConcurrency || 'hc0',
+            navigator.deviceMemory || 'dm0',
+            ('ontouchstart' in window) ? 'touch' : 'notouch',
+            window.matchMedia('(color-gamut: p3)').matches ? 'p3' : 'srgb'
+        ];
+
+        const str = parts.join('|');
         
         let hash = 5381;
         for (let i = 0; i < str.length; i++) {
@@ -1147,10 +1183,12 @@
         // Prevent calls if URL is not set (failsafe)
         if (!WEBHOOK_URL.includes('script.google.com')) return; 
 
+        const anonId = getAnonymousId();
         const timeSpent = Math.round((Date.now() - startTime) / 1000);
 
         const payload = {
-            uid: window.userId || 'anonymous',
+            uid: window.userId || anonId,   // ← ВСЕГДА НЕ ПУСТО (04-02-2026)
+            anon_id: anonId,                // ← ОТДЕЛЬНО ДЛЯ MERGE (04-02-2026)
             fingerprint: visitorFingerprint,
             lang: document.documentElement.lang,
             browser_lang: navigator.language, 
@@ -1206,8 +1244,8 @@
         const ctaButton = document.querySelector('.floating-cta');
         if (ctaButton && translations[lang] && translations[lang].form_config) {
             const config = translations[lang].form_config;
-            // Use existing UID or fallback to fingerprint/unknown
-            const trackingId = window.userId || visitorFingerprint || 'unknown';
+            // Use existing UID or fallback to AnonymousId
+            const trackingId = window.userId || getAnonymousId();
             
             // Build Google Form URL with pre-filled ID
             const separator = config.url.includes('?') ? '&' : '?';
@@ -1356,4 +1394,3 @@
 </script>
 </body>
 </html>
-
