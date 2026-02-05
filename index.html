@@ -24,6 +24,17 @@
         // === 1. ЗАХВАТ ДАННЫХ (Passport 2.B) ===
         const urlParams = new URLSearchParams(window.location.search);
         const incomingUid = urlParams.get('uid');
+        const emailId   = urlParams.get('email_id');
+        const emailDate = urlParams.get('email_date');
+        const segment   = urlParams.get('segment');
+
+        // ⬇️ ВАЖНО: РАННЯЯ ИНИЦИАЛИЗАЦИЯ LANG (до SESSION_START) (добавлено 06.02.2026 01:35)
+        const earlyLang =
+            urlParams.get('lang') ||
+            localStorage.getItem('selectedLanguage') ||
+            navigator.language.split('-')[0] ||
+            'es';
+        document.documentElement.lang = earlyLang;
 
         // 1️⃣ Если uid пришёл из email — сохраняем
         if (incomingUid) {
@@ -1195,6 +1206,10 @@ function getAnonymousId() {
             action: action,
             val: slideNum || currentSlide,
             details: details || '',
+
+            email_id: emailId || '',
+            email_date: emailDate || '',
+            segment: segment || '',
             
             time_spent: timeSpent,
             resolution: `${window.screen.width}x${window.screen.height}`,
@@ -1394,4 +1409,3 @@ function getAnonymousId() {
 </script>
 </body>
 </html>
-
