@@ -466,7 +466,7 @@
 // ------------------------------------------------------
 // Используется для быстрых редиректов из писем / PDF / email
 // Управляется через URL-параметр ?action=...
-// Пример: ?action=radio_Lloret
+// Пример: ?action=radio_lloret
 // ======================================================
 const EXTERNAL_REDIRECTS = {
     radio_lloret: {
@@ -1441,18 +1441,46 @@ function getAnonymousId() {
 
         // Логируем факт внешнего интереса
         if (typeof logToSheet === 'function') {
-            logToSheet(
-                'EXTERNAL_REDIRECT',
-                null,
-                `${action} | ${target.label}`
-            );
+            (function logRedirectWithBeacon() {
+                const anonId = getAnonymousId();
+                const payload = {
+                    uid: window.userId || anonId,
+                    anon_id: anonId,
+                    fingerprint: visitorFingerprint,
+                    lang: document.documentElement.lang,
+                    action: 'EXTERNAL_REDIRECT',
+                    val: '',
+                    details: `${action} | ${target.label}`,
+                    email_id: emailId || '',
+                    email_date: emailDate || '',
+                    segment: segment || '',
+                    referrer: window.trafficData.referrer,
+                    utm_source: window.trafficData.utm_source,
+                    utm_medium: window.trafficData.utm_medium,
+                    utm_campaign: window.trafficData.utm_campaign
+                };
+
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(
+                        WEBHOOK_URL,
+                        new Blob([JSON.stringify(payload)], { type: 'application/json' })
+                    );
+                } else {
+                    // fallback (редко)
+                    fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(payload)
+                    });
+                }
+            })();
         }
 
         // Быстрый редирект (без UI)
-        // 500 мс достаточно, чтобы VISIT и SESSION_START ушли
+        // 499 мс максимум, чтобы VISIT и SESSION_START ушли, а очистка URL еще не сработала (500 мс)
         setTimeout(() => {
             window.location.href = target.url;
-        }, 500);
+        }, 300);
     })();
 
 </script>
