@@ -460,6 +460,23 @@
     const totalSlides = 11;
     const startTime = Date.now();
     const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxcrRNd_e9ncS_X6eTET3UpOcjMRLcAHryo0XHp8oE8GqhzkEyzi_hJXbhzTzHBE4Am/exec'; 
+
+// ======================================================
+// EXTERNAL REDIRECT CONFIG (11-02-2026)
+// ------------------------------------------------------
+// Используется для быстрых редиректов из писем / PDF / email
+// Управляется через URL-параметр ?action=...
+// Пример: ?action=radio_Lloret
+// ======================================================
+const EXTERNAL_REDIRECTS = {
+    radio_lloret: {
+        url: 'https://www.novaradiolloret.org/obertes-les-inscripcions-per-participar-al-festival-teatre-sense-fronteres-al-teatre-de-lloret/',
+        label: 'Nova Ràdio Lloret 2026-02-09'
+    }
+    // ⬇️ В будущем можно добавлять новые action без изменения логики
+    // podcast_01: { url: 'https://...', label: 'Podcast Interview' }
+};
+
     let userIP = 'Unknown';
     let visitorFingerprint = 'Generating...';
 
@@ -1406,6 +1423,38 @@ function getAnonymousId() {
         // Log Initial Visit (Passport 2.A - VISIT)
         logToSheet('VISIT', 1, 'Page Loaded');
     });
+
+    // ======================================================
+    // FAST EXTERNAL REDIRECT HANDLER (11-02-2026)
+    // ------------------------------------------------------
+    // Если в URL присутствует ?action=... и оно есть в
+    // EXTERNAL_REDIRECTS — фиксируем визит и редиректим
+    // ======================================================
+    (function handleExternalRedirect() {
+        const params = new URLSearchParams(window.location.search);
+        const action = params.get('action');
+
+        if (!action) return;
+        if (!EXTERNAL_REDIRECTS[action]) return;
+
+        const target = EXTERNAL_REDIRECTS[action];
+
+        // Логируем факт внешнего интереса
+        if (typeof logToSheet === 'function') {
+            logToSheet(
+                'EXTERNAL_REDIRECT',
+                null,
+                `${action} | ${target.label}`
+            );
+        }
+
+        // Быстрый редирект (без UI)
+        // 500 мс достаточно, чтобы VISIT и SESSION_START ушли
+        setTimeout(() => {
+            window.location.href = target.url;
+        }, 500);
+    })();
+
 </script>
 </body>
 </html>
