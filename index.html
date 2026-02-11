@@ -1299,8 +1299,11 @@ function getAnonymousId() {
             gtag('event', 'language_change', { 'event_label': lang });
         }
         
-        // Internal Log
-        logToSheet('LANG_CHANGE', null, lang);
+        // Internal Log - НЕ при редиректе
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.get('action')) {
+            logToSheet('LANG_CHANGE', null, lang);
+        }
     }
 
     function showSlide(n) {
@@ -1323,8 +1326,11 @@ function getAnonymousId() {
             gtag('event', 'slide_view', { 'slide_number': currentSlide });
         }
         
-        // Internal Log (Passport 2.A - SLIDE_VIEW)
-        logToSheet('SLIDE_VIEW', currentSlide, '');
+        // Internal Log (Passport 2.A - SLIDE_VIEW) - НЕ при редиректе
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.get('action')) {
+            logToSheet('SLIDE_VIEW', currentSlide, '');
+        }
     }
 
     function nextSlide() { if (currentSlide < totalSlides) { currentSlide++; showSlide(currentSlide); } }
@@ -1420,8 +1426,11 @@ function getAnonymousId() {
             }, 500); 
         }
         
-        // Log Initial Visit (Passport 2.A - VISIT)
-        logToSheet('VISIT', 1, 'Page Loaded');
+        // Log Initial Visit (Passport 2.A - VISIT) - НЕ при редиректе
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.get('action')) {
+            logToSheet('VISIT', 1, 'Page Loaded');
+        }
     });
 
     // ======================================================
