@@ -1495,8 +1495,7 @@ function getAnonymousId() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            }
-    
+                
             // Редирект с небольшой задержкой для гарантии отправки
             setTimeout(() => {
                 window.location.href = target.url;
@@ -1508,5 +1507,6 @@ function getAnonymousId() {
 </script>
 </body>
 </html>
+
 
 
