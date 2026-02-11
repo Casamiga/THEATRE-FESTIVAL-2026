@@ -1489,18 +1489,12 @@ function getAnonymousId() {
                 utm_term: window.trafficData.utm_term          // ✅ ДОБАВЛЕНО
             };
 
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(
-                    WEBHOOK_URL,
-                    new Blob([JSON.stringify(payload)], { type: 'application/json' })
-                );
-            } else {
-                fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).catch(e => console.error('Redirect log error', e));
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
             }
     
             // Редирект с небольшой задержкой для гарантии отправки
@@ -1514,4 +1508,5 @@ function getAnonymousId() {
 </script>
 </body>
 </html>
+
 
