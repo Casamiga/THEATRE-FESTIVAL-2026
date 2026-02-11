@@ -455,11 +455,11 @@
 </div>
 
 <script>
-    // ... Версия 4 от 15 дек 2025 г 08:33 Идентификатор развертывания AKfycby4aldzFHdyhnJ5LRdofyF7xhmmDpEPp-xqfWkd85miBgCtcoTCZEwD3VMVuuBW3P87 ...
+    // ... Версия 9
     let currentSlide = 1;
     const totalSlides = 11;
     const startTime = Date.now();
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxcrRNd_e9ncS_X6eTET3UpOcjMRLcAHryo0XHp8oE8GqhzkEyzi_hJXbhzTzHBE4Am/exec'; 
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzeSgPmPbFEb91BM8MTq6XZ4B6WNmqK0dk1vkQwVGoPzNPgcegj8cT1nHmi-V_F9QyL/exec'; 
 
 // ======================================================
 // EXTERNAL REDIRECT CONFIG (11-02-2026)
@@ -1434,53 +1434,72 @@ function getAnonymousId() {
         const params = new URLSearchParams(window.location.search);
         const action = params.get('action');
 
-        if (!action) return;
-        if (!EXTERNAL_REDIRECTS[action]) return;
+        if (!action || !EXTERNAL_REDIRECTS[action]) return;
+
+        // ⬇️ Ждём fingerprint (макс 200 мс)
+        const waitForFingerprint = () =>
+            new Promise(resolve => {
+                if (visitorFingerprint && visitorFingerprint !== 'Generating...') {
+                    resolve();
+                } else {
+                    setTimeout(resolve, 200);
+                }
+            });
 
         const target = EXTERNAL_REDIRECTS[action];
 
         // Логируем факт внешнего интереса
-        if (typeof logToSheet === 'function') {
-            (function logRedirectWithBeacon() {
-                const anonId = getAnonymousId();
-                const payload = {
-                    uid: window.userId || anonId,
-                    anon_id: anonId,
-                    fingerprint: visitorFingerprint,
-                    lang: document.documentElement.lang,
-                    action: 'EXTERNAL_REDIRECT',
-                    val: '',
-                    details: `${action} | ${target.label}`,
-                    email_id: emailId || '',
-                    email_date: emailDate || '',
-                    segment: segment || '',
-                    referrer: window.trafficData.referrer,
-                    utm_source: window.trafficData.utm_source,
-                    utm_medium: window.trafficData.utm_medium,
-                    utm_campaign: window.trafficData.utm_campaign
-                };
+        waitForFingerprint().then(() => {
+            const anonId = getAnonymousId();
+            const timeSpent = Math.round((Date.now() - startTime) / 1000);
+    
+            const payload = {
+                uid: window.userId || anonId,
+                anon_id: anonId,
+                fingerprint: visitorFingerprint,
+                lang: document.documentElement.lang,
+                browser_lang: navigator.language,              // ✅ ДОБАВЛЕНО Claude
+                action: 'EXTERNAL_REDIRECT',
+                val: '',
+                details: `${action} | ${target.label}`,
+                email_id: emailId || '',
+                email_date: emailDate || '',
+                segment: segment || '',
+        
+                time_spent: timeSpent,                         // ✅ ДОБАВЛЕНО
+                resolution: `${window.screen.width}x${window.screen.height}`,  // ✅ ДОБАВЛЕНО
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,    // ✅ ДОБАВЛЕНО
+                ip: userIP,                                    // ✅ ДОБАВЛЕНО
+                user_agent: navigator.userAgent,               // ✅ ДОБАВЛЕНО
+        
+                referrer: window.trafficData.referrer,
+                utm_source: window.trafficData.utm_source,
+                utm_medium: window.trafficData.utm_medium,
+                utm_campaign: window.trafficData.utm_campaign,
+                utm_content: window.trafficData.utm_content,   // ✅ ДОБАВЛЕНО
+                utm_term: window.trafficData.utm_term          // ✅ ДОБАВЛЕНО
+            };
 
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(
-                        WEBHOOK_URL,
-                        new Blob([JSON.stringify(payload)], { type: 'application/json' })
-                    );
-                } else {
-                    // fallback (редко)
-                    fetch(WEBHOOK_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify(payload)
-                    });
-                }
-            })();
-        }
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(
+                    WEBHOOK_URL,
+                    new Blob([JSON.stringify(payload)], { type: 'application/json' })
+                );
+            } else {
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).catch(e => console.error('Redirect log error', e));
+            }
+    
+            // Редирект с небольшой задержкой для гарантии отправки
+            setTimeout(() => {
+                window.location.href = target.url;
+            }, 100);
+        });
 
-        // Быстрый редирект (без UI)
-        // 499 мс максимум, чтобы VISIT и SESSION_START ушли, а очистка URL еще не сработала (500 мс)
-        setTimeout(() => {
-            window.location.href = target.url;
-        }, 300);
     })();
 
 </script>
